@@ -1,0 +1,8 @@
+<library path="terrain_costmap">
+  <class type="terrain_costmap::TerrainLayer" base_class_type="nav2_costmap_2d::Layer">
+    <description>
+      Graded traversability cost from 3D lidar ground returns: windowed plane
+      fit per cell, slope and residual roughness mapped to cost.
+    </description>
+  </class>
+</library>
