@@ -1,0 +1,11 @@
+pooled over 4 runs: 20260927_105212_baseline_run1, 20260927_105752_baseline_run1, 20260927_111643_baseline_run2, 20260927_113441_baseline_run3
+
+region         episodes  mean change   worse
+--------------------------------------------
+bump_field            9       -3.8cm     56%
+floor                 3      +34.9cm     67%
+rough_iso_f           6      +28.7cm    100%
+
+tilt episodes  n=18   mean change  +13.5 cm, worse in 72%
+flat control   n=296  mean change  -21.6 cm, worse in 46%
+difference +35.1 cm, one-sided permutation p = 0.000
