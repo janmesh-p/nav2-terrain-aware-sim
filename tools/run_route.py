@@ -45,7 +45,11 @@ def main():
     rclpy.init()
     nav = BasicNavigator()
     nav.set_parameters([Parameter("use_sim_time", Parameter.Type.BOOL, True)])
-    nav.waitUntilNav2Active(localizer="amcl")
+    # waitUntilNav2Active(localizer="amcl") publishes a default (0, 0, 0)
+    # initial pose if AMCL has not reported one yet, which teleports the
+    # estimate. Wait for the lifecycle states only and never touch the pose.
+    nav._waitForNodeToActivate("amcl")
+    nav._waitForNodeToActivate("bt_navigator")
 
     prev = (route["start"]["x"], route["start"]["y"])
     legs = []
