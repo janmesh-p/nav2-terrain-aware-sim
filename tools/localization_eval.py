@@ -31,7 +31,9 @@ import tf2_ros
 from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.parameter import Parameter
+from rclpy.qos import qos_profile_sensor_data
 from rclpy.time import Time
+from rosgraph_msgs.msg import Clock
 from tf2_msgs.msg import TFMessage
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
@@ -118,6 +120,14 @@ class LocalizationEval(Node):
         # a short delay instead of blocking on a lookup.
         self.pending = collections.deque(maxlen=2000)
         self.latest_ns = 0
+        # Truth stamps can come from a different sim clock than /clock (for
+        # example a time node that does not reset on Stop). Measure the offset
+        # against /clock and remove it when it is clearly not just latency.
+        self.clock_ns = None
+        self.offsets = collections.deque(maxlen=50)
+        self.offset_ns = 0
+        self.offset_reported = False
+        self.create_subscription(Clock, "/clock", self.on_clock, qos_profile_sensor_data)
         self.create_subscription(TFMessage, args.gt_topic, self.on_truth, 50)
         self.create_timer(0.05, self.process)
         self.create_timer(5.0, self.status, clock=rclpy.clock.Clock())
@@ -142,12 +152,31 @@ class LocalizationEval(Node):
                 self.last_error = str(e).splitlines()[0][:120]
         return False
 
+    def on_clock(self, msg: Clock):
+        self.clock_ns = Time.from_msg(msg.clock).nanoseconds
+
+    def _correct(self, raw_ns: int) -> int:
+        if self.clock_ns is None:
+            return raw_ns
+        self.offsets.append(raw_ns - self.clock_ns)
+        median = int(np.median(self.offsets))
+        if abs(median) > 1e9:
+            self.offset_ns = median
+            if not self.offset_reported and len(self.offsets) >= 10:
+                self.get_logger().warn(
+                    f"truth clock is {median * 1e-9:+.2f} s off /clock, correcting")
+                self.offset_reported = True
+        return raw_ns - self.offset_ns
+
     def on_truth(self, msg: TFMessage):
         tf = next((t for t in msg.transforms if t.child_frame_id == self.args.gt_child), None)
         if tf is None:
             return
         self.gt_count += 1
-        stamp_ns = Time.from_msg(tf.header.stamp).nanoseconds
+        raw_ns = Time.from_msg(tf.header.stamp).nanoseconds
+        stamp_ns = self._correct(raw_ns)
+        if self.clock_ns is None or (len(self.offsets) < 10 and abs(raw_ns - self.clock_ns) > 1e9):
+            return  # wait until the offset estimate is stable
         self.latest_ns = max(self.latest_ns, stamp_ns)
         if self.last_ns is not None and stamp_ns - self.last_ns < 1e9 / self.args.rate:
             return
