@@ -227,21 +227,16 @@ class LocalizationEval(Node):
 
 
 TILT_BANDS = [(0.0, 1.0), (1.0, 3.0), (3.0, 90.0)]
+EPISODE_TILT_DEG = 1.5    # tilt above this starts an episode
+FLAT_TILT_DEG = 0.5       # control windows must stay below this
+EPISODE_MERGE_S = 1.0     # join episodes separated by shorter gaps
+EPISODE_MIN_S = 0.5       # ignore blips shorter than this
+WINDOW_S = 2.0            # error is measured this long before and after
+CONTROLS_PER_EPISODE = 20
 
 
 def _f(rows: list, key: str) -> np.ndarray:
     return np.array([float(r[key]) for r in rows])
-
-
-def error_growth_cm_s(rows: list) -> np.ndarray:
-    """Per-sample rate of change of AMCL position error, cm per sim second."""
-    t = _f(rows, "t")
-    e = _f(rows, "amcl_pos_err") * 100.0
-    g = np.zeros_like(e)
-    dt_ = np.diff(t)
-    ok = dt_ > 1e-6
-    g[1:][ok] = np.diff(e)[ok] / dt_[ok]
-    return g
 
 
 def summarize(rows: list) -> list:
@@ -265,73 +260,219 @@ def summarize(rows: list) -> list:
     return out
 
 
-def tilt_analysis(rows: list) -> dict | None:
-    """Relate AMCL error to body tilt.
+def _has_tilt(rows: list) -> bool:
+    return bool(rows) and "tilt_deg" in rows[0] and rows[0]["tilt_deg"] not in ("", None)
 
-    Error level lags and persists, so the growth rate is the fairer signal:
-    if tilt corrupts scan matching, error should grow while tilted.
-    """
-    if not rows or "tilt_deg" not in rows[0] or rows[0]["tilt_deg"] in ("", None):
+
+def find_episodes(t: np.ndarray, tilt: np.ndarray) -> list:
+    """Contiguous stretches with tilt above EPISODE_TILT_DEG, as (t_start, t_end)."""
+    above = tilt > EPISODE_TILT_DEG
+    raw, i = [], 0
+    while i < len(t):
+        if above[i]:
+            j = i
+            while j + 1 < len(t) and above[j + 1]:
+                j += 1
+            raw.append([t[i], t[j]])
+            i = j + 1
+        else:
+            i += 1
+    merged = []
+    for ep in raw:
+        if merged and ep[0] - merged[-1][1] < EPISODE_MERGE_S:
+            merged[-1][1] = ep[1]
+        else:
+            merged.append(ep)
+    return [(a, b) for a, b in merged if b - a >= EPISODE_MIN_S]
+
+
+def _window_delta(t: np.ndarray, err: np.ndarray, t0: float, t1: float):
+    """Median error after the window minus median error before it."""
+    before = err[(t >= t0 - WINDOW_S) & (t < t0)]
+    after = err[(t > t1) & (t <= t1 + WINDOW_S)]
+    if len(before) < 3 or len(after) < 3:
         return None
+    return float(np.median(after) - np.median(before))
+
+
+def episode_analysis(rows: list, seed: int = 0) -> dict | None:
+    """Error change across tilt episodes versus matched flat-floor windows.
+
+    AMCL corrects in discrete jumps, so per-sample error rates are dominated
+    by those jumps. Comparing error just before and just after each tilt
+    episode, against identical windows on flat floor, isolates what the tilt
+    itself did.
+    """
+    if not _has_tilt(rows):
+        return None
+    t = _f(rows, "t")
     tilt = _f(rows, "tilt_deg")
     err = _f(rows, "amcl_pos_err") * 100
-    growth = error_growth_cm_s(rows)
-    bands = []
-    for lo, hi in TILT_BANDS:
-        m = (tilt >= lo) & (tilt < hi)
-        if not m.any():
+    regions = np.array([r["region"] for r in rows])
+    rng = np.random.default_rng(seed)
+
+    episodes = []
+    for t0, t1 in find_episodes(t, tilt):
+        d = _window_delta(t, err, t0, t1)
+        if d is None:
             continue
-        bands.append({
-            "band": f"{lo:g}-{hi:g} deg" if hi < 90 else f">{lo:g} deg",
-            "samples": int(m.sum()),
-            "time_share": float(m.mean()),
-            "amcl_mean_cm": float(err[m].mean()),
-            "growth_mean_cm_s": float(growth[m].mean()),
+        m = (t >= t0) & (t <= t1)
+        vals, counts = np.unique(regions[m], return_counts=True)
+        episodes.append({
+            "t_start": float(t0), "duration_s": float(t1 - t0),
+            "peak_tilt_deg": float(tilt[m].max()),
+            "region": str(vals[counts.argmax()]),
+            "error_before_cm": float(np.median(err[(t >= t0 - WINDOW_S) & (t < t0)])),
+            "delta_cm": d,
         })
-    corr = lambda x, y: float(np.corrcoef(x, y)[0, 1]) if np.std(x) > 0 and np.std(y) > 0 else float("nan")
-    return {
-        "pearson_tilt_vs_error": corr(tilt, err),
-        "pearson_tilt_vs_growth": corr(tilt, growth),
-        "bands": bands,
-    }
+
+    flat_ok = (tilt < FLAT_TILT_DEG) & (regions == "floor")
+    controls = []
+    for ep in episodes:
+        dur = ep["duration_s"]
+        lo, hi = t[0] + WINDOW_S, t[-1] - dur - WINDOW_S
+        if hi <= lo:
+            continue
+        for c0 in rng.uniform(lo, hi, 200):
+            c1 = c0 + dur
+            span = (t >= c0 - WINDOW_S) & (t <= c1 + WINDOW_S)
+            if span.sum() < 6 or not flat_ok[span].all():
+                continue
+            d = _window_delta(t, err, c0, c1)
+            if d is not None:
+                controls.append(d)
+            if len(controls) >= CONTROLS_PER_EPISODE * (episodes.index(ep) + 1):
+                break
+
+    bands = []
+    for lo_b, hi_b in TILT_BANDS:
+        m = (tilt >= lo_b) & (tilt < hi_b)
+        if m.any():
+            bands.append({
+                "band": f"{lo_b:g}-{hi_b:g} deg" if hi_b < 90 else f">{lo_b:g} deg",
+                "samples": int(m.sum()), "time_share": float(m.mean()),
+                "amcl_mean_cm": float(err[m].mean()),
+            })
+    level_r = float(np.corrcoef(tilt, err)[0, 1]) if tilt.std() > 0 and err.std() > 0 else float("nan")
+    return {"episodes": episodes, "controls": controls, "bands": bands,
+            "pearson_tilt_vs_error": level_r}
 
 
-def format_tables(summary: list, tilt: dict | None) -> str:
+def compare(ep_deltas: list, ctrl_deltas: list, seed: int = 0, n_perm: int = 5000) -> dict:
+    """Mean difference with a one-sided permutation p-value (episodes > control)."""
+    a, b = np.asarray(ep_deltas, float), np.asarray(ctrl_deltas, float)
+    out = {"episodes": len(a), "controls": len(b)}
+    if len(a) == 0 or len(b) == 0:
+        return out
+    diff = a.mean() - b.mean()
+    pooled = np.concatenate([a, b])
+    rng = np.random.default_rng(seed)
+    count = 0
+    for _ in range(n_perm):
+        rng.shuffle(pooled)
+        if pooled[:len(a)].mean() - pooled[len(a):].mean() >= diff:
+            count += 1
+    out.update({
+        "episode_mean_delta_cm": float(a.mean()),
+        "episode_share_worse": float((a > 0).mean()),
+        "control_mean_delta_cm": float(b.mean()),
+        "control_share_worse": float((b > 0).mean()),
+        "difference_cm": float(diff),
+        "p_value_one_sided": (count + 1) / (n_perm + 1),
+    })
+    return out
+
+
+def format_tables(summary: list, epi: dict | None, stats: dict | None) -> str:
     head = (f"{'region':<14}{'n':>6}{'amcl mean':>11}{'amcl p95':>10}{'amcl max':>10}"
             f"{'yaw p95':>9}{'odom mean':>11}{'tilt p95':>10}")
-    lines = [head, "-" * len(head)]
+    lines = [head, "-" * len(head)] if summary else []
     for s in summary:
         tp = f"{s['tilt_p95_deg']:>8.1f}d" if "tilt_p95_deg" in s else f"{'n/a':>9}"
         lines.append(
             f"{s['region']:<14}{s['samples']:>6}{s['amcl_mean_cm']:>9.1f}cm{s['amcl_p95_cm']:>8.1f}cm"
             f"{s['amcl_max_cm']:>8.1f}cm{s['amcl_p95_yaw_deg']:>7.1f}d{s['odom_mean_cm']:>9.1f}cm {tp}")
-    if tilt:
-        lines += ["", f"{'tilt band':<12}{'n':>6}{'time':>7}{'amcl mean':>11}{'err growth':>13}",
-                  "-" * 49]
-        for b in tilt["bands"]:
+    if epi:
+        lines += ["", f"{'tilt band':<12}{'n':>6}{'time':>7}{'amcl mean':>11}", "-" * 36]
+        for b in epi["bands"]:
             lines.append(f"{b['band']:<12}{b['samples']:>6}{100 * b['time_share']:>6.0f}%"
-                         f"{b['amcl_mean_cm']:>9.1f}cm{b['growth_mean_cm_s']:>+10.2f}cm/s")
-        lines.append(f"correlation tilt vs error {tilt['pearson_tilt_vs_error']:+.2f}, "
-                     f"tilt vs error growth {tilt['pearson_tilt_vs_growth']:+.2f}")
+                         f"{b['amcl_mean_cm']:>9.1f}cm")
+        lines.append(f"correlation tilt vs error level {epi['pearson_tilt_vs_error']:+.2f}")
+        lines += ["", f"{'episode at':<12}{'dur':>6}{'peak tilt':>11}{'region':>15}{'before':>9}{'change':>10}",
+                  "-" * 63]
+        for e in epi["episodes"]:
+            lines.append(f"{e['t_start']:>8.1f} s {e['duration_s']:>5.1f}s{e['peak_tilt_deg']:>9.1f}d"
+                         f"{e['region']:>15}{e['error_before_cm']:>7.1f}cm{e['delta_cm']:>+8.1f}cm")
+    if stats and "difference_cm" in stats:
+        lines += [
+            "",
+            f"tilt episodes  n={stats['episodes']:<4} mean change {stats['episode_mean_delta_cm']:+6.1f} cm, "
+            f"worse in {100 * stats['episode_share_worse']:.0f}%",
+            f"flat control   n={stats['controls']:<4} mean change {stats['control_mean_delta_cm']:+6.1f} cm, "
+            f"worse in {100 * stats['control_share_worse']:.0f}%",
+            f"difference {stats['difference_cm']:+.1f} cm, one-sided permutation p = {stats['p_value_one_sided']:.3f}",
+        ]
     return "\n".join(lines)
 
 
-def plot(rows: list, tilt: dict | None, path: pathlib.Path) -> None:
+def _mpl():
     try:
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
+        return plt
     except ImportError:
         print("matplotlib not installed, skipping plots")
-        return
+        return None
 
+
+def _episode_panels(ax_bar, ax_box, episodes: list, controls: list, stats: dict | None):
+    colors = {"floor": "tab:gray", "bump_field": "tab:green",
+              "rough_iso_f": "tab:red", "ramp_7deg": "tab:purple"}
+    ax_bar.bar(range(len(episodes)), [e["delta_cm"] for e in episodes],
+               color=[colors.get(e["region"], "tab:blue") for e in episodes])
+    ax_bar.axhline(0, color="k", lw=0.6)
+    ax_bar.set_xticks(range(len(episodes)))
+    ax_bar.set_xticklabels([f"{e['peak_tilt_deg']:.0f}d" for e in episodes], fontsize=8)
+    ax_bar.set_xlabel("tilt episode (peak tilt)")
+    ax_bar.set_ylabel("AMCL error change [cm]")
+    ax_bar.set_title("Error change across each tilt episode")
+    handles = [plt_patch(c, r) for r, c in colors.items() if any(e["region"] == r for e in episodes)]
+    if handles:
+        ax_bar.legend(handles=handles, fontsize=8)
+    ax_bar.grid(alpha=0.3, axis="y")
+
+    data = [d for d in (np.asarray([e["delta_cm"] for e in episodes]), np.asarray(controls)) if True]
+    ax_box.boxplot(data, showfliers=True)
+    ax_box.set_xticks([1, 2])
+    ax_box.set_xticklabels([f"tilt episodes\nn={len(episodes)}", f"flat control\nn={len(controls)}"])
+    ax_box.axhline(0, color="k", lw=0.6)
+    ax_box.set_ylabel("AMCL error change [cm]")
+    title = "Tilt vs flat floor"
+    if stats and "p_value_one_sided" in stats:
+        title += f" (diff {stats['difference_cm']:+.1f} cm, p={stats['p_value_one_sided']:.3f})"
+    ax_box.set_title(title)
+    ax_box.grid(alpha=0.3, axis="y")
+
+
+def plt_patch(color, label):
+    from matplotlib.patches import Patch
+    return Patch(color=color, label=label)
+
+
+def plot(rows: list, epi: dict | None, stats: dict | None, path: pathlib.Path) -> None:
+    plt = _mpl()
+    if plt is None:
+        return
     t = _f(rows, "t") - float(rows[0]["t"])
     amcl = _f(rows, "amcl_pos_err") * 100
     odom = _f(rows, "odom_pos_err") * 100
     on_terrain = np.array([r["region"] not in ("floor", "unknown") for r in rows])
-    has_tilt = tilt is not None
 
-    fig, axes = plt.subplots(2, 2, figsize=(14, 9)) if has_tilt else plt.subplots(1, 2, figsize=(13, 5))
+    if epi:
+        fig, axes = plt.subplots(2, 2, figsize=(14, 9))
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=(13, 5))
     axes = np.atleast_1d(axes).ravel()
 
     ax = axes[0]
@@ -344,9 +485,10 @@ def plot(rows: list, tilt: dict | None, path: pathlib.Path) -> None:
     ax.set_ylabel("position error [cm]")
     ax.set_title("Localization error vs ground truth")
     ax.grid(alpha=0.3)
-    if has_tilt:
+    if epi:
         ax2 = ax.twinx()
         ax2.plot(t, _f(rows, "tilt_deg"), color="gray", lw=0.8, alpha=0.8, label="tilt")
+        ax2.axhline(EPISODE_TILT_DEG, color="gray", ls=":", lw=0.8)
         ax2.set_ylabel("tilt [deg]")
         h1, l1 = ax.get_legend_handles_labels()
         h2, l2 = ax2.get_legend_handles_labels()
@@ -365,42 +507,26 @@ def plot(rows: list, tilt: dict | None, path: pathlib.Path) -> None:
     ax.legend()
     ax.grid(alpha=0.3)
 
-    if has_tilt:
-        tilt_v = _f(rows, "tilt_deg")
-        growth = error_growth_cm_s(rows)
-        ax = axes[2]
-        ax.scatter(tilt_v, growth, s=6, alpha=0.4)
-        ax.axhline(0, color="k", lw=0.6)
-        ax.set_xlabel("tilt [deg]")
-        ax.set_ylabel("AMCL error growth [cm/s]")
-        ax.set_title(f"Error growth vs tilt (r = {tilt['pearson_tilt_vs_growth']:+.2f})")
-        ax.grid(alpha=0.3)
-
-        ax = axes[3]
-        names = [b["band"] for b in tilt["bands"]]
-        ax.bar(names, [b["growth_mean_cm_s"] for b in tilt["bands"]], color="tab:blue")
-        for i, b in enumerate(tilt["bands"]):
-            ax.annotate(f"n={b['samples']}", (i, b["growth_mean_cm_s"]), ha="center",
-                        va="bottom" if b["growth_mean_cm_s"] >= 0 else "top", fontsize=9)
-        ax.axhline(0, color="k", lw=0.6)
-        ax.set_ylabel("mean AMCL error growth [cm/s]")
-        ax.set_title("Error growth by tilt band")
-        ax.grid(alpha=0.3, axis="y")
+    if epi:
+        _episode_panels(axes[2], axes[3], epi["episodes"], epi["controls"], stats)
 
     fig.tight_layout()
     fig.savefig(path, dpi=130)
+    plt.close(fig)
     print(f"plot: {path}")
 
 
-def analyze(rows: list, out: pathlib.Path) -> None:
+def analyze(rows: list, out: pathlib.Path) -> dict | None:
     summary = summarize(rows)
-    tilt = tilt_analysis(rows)
+    epi = episode_analysis(rows)
+    stats = compare([e["delta_cm"] for e in epi["episodes"]], epi["controls"]) if epi else None
     with open(out / "summary.json", "w") as f:
-        json.dump({"regions": summary, "tilt": tilt}, f, indent=2, default=float)
-    table = format_tables(summary, tilt)
+        json.dump({"regions": summary, "episodes": epi, "tilt_vs_flat": stats}, f, indent=2, default=float)
+    table = format_tables(summary, epi, stats)
     (out / "summary.txt").write_text(table + "\n")
     print(table)
-    plot(rows, tilt, out / "localization.png")
+    plot(rows, epi, stats, out / "localization.png")
+    return epi
 
 
 def write_outputs(rows: list, label: str, out_root: pathlib.Path) -> pathlib.Path:
@@ -415,14 +541,59 @@ def write_outputs(rows: list, label: str, out_root: pathlib.Path) -> pathlib.Pat
     return out
 
 
-def reanalyze(csv_path: str) -> None:
-    """Rebuild tables and plots from a saved samples.csv without ROS."""
-    with open(csv_path) as f:
-        rows = list(csv.DictReader(f))
-    if not rows:
-        print("no samples")
+def _load_csv(path: str) -> list:
+    with open(path) as f:
+        return list(csv.DictReader(f))
+
+
+def reanalyze(csv_paths: list, pooled_out: str | None = None) -> None:
+    """Rebuild per-run outputs from saved samples.csv files, and pool episodes
+    across runs when more than one is given. No ROS needed."""
+    all_eps, all_ctrl, per_run = [], [], []
+    for path in csv_paths:
+        rows = _load_csv(path)
+        if not rows:
+            print(f"{path}: no samples")
+            continue
+        print(f"\n=== {path}")
+        epi = analyze(rows, pathlib.Path(path).parent)
+        if epi:
+            all_eps += epi["episodes"]
+            all_ctrl += epi["controls"]
+            per_run.append((pathlib.Path(path).parent.name, epi))
+        else:
+            print("(no tilt data in this run, skipped for pooling)")
+
+    if len(per_run) < 2:
         return
-    analyze(rows, pathlib.Path(csv_path).parent)
+    stats = compare([e["delta_cm"] for e in all_eps], all_ctrl)
+    out = pathlib.Path(pooled_out) if pooled_out else REPO / "results" / "localization" / "pooled"
+    out.mkdir(parents=True, exist_ok=True)
+    lines = [f"pooled over {len(per_run)} runs: " + ", ".join(n for n, _ in per_run), ""]
+    by_region = {}
+    for e in all_eps:
+        by_region.setdefault(e["region"], []).append(e["delta_cm"])
+    lines.append(f"{'region':<14}{'episodes':>9}{'mean change':>13}{'worse':>8}")
+    lines.append("-" * 44)
+    for r, d in sorted(by_region.items()):
+        d = np.asarray(d)
+        lines.append(f"{r:<14}{len(d):>9}{d.mean():>+11.1f}cm{100 * (d > 0).mean():>7.0f}%")
+    lines += ["", format_tables([], None, stats).strip()]
+    text = "\n".join(lines)
+    (out / "pooled_summary.txt").write_text(text + "\n")
+    with open(out / "pooled_summary.json", "w") as f:
+        json.dump({"runs": [n for n, _ in per_run], "tilt_vs_flat": stats,
+                   "episodes": all_eps}, f, indent=2, default=float)
+    print("\n=== pooled\n" + text)
+
+    plt = _mpl()
+    if plt is not None:
+        fig, (a1, a2) = plt.subplots(1, 2, figsize=(13, 5))
+        _episode_panels(a1, a2, all_eps, all_ctrl, stats)
+        fig.tight_layout()
+        fig.savefig(out / "pooled_episodes.png", dpi=130)
+        plt.close(fig)
+        print(f"plot: {out / 'pooled_episodes.png'}")
 
 
 def main():
@@ -435,11 +606,13 @@ def main():
     ap.add_argument("--rate", type=float, default=10.0, help="samples per second")
     ap.add_argument("--delay", type=float, default=0.3, help="seconds to wait for TF")
     ap.add_argument("--out", default=str(REPO / "results" / "localization"))
-    ap.add_argument("--analyze", metavar="SAMPLES_CSV", help="re-run analysis on a saved run")
+    ap.add_argument("--analyze", nargs="+", metavar="SAMPLES_CSV",
+                    help="re-run analysis on saved runs; several files are also pooled")
+    ap.add_argument("--pooled-out", help="output folder for pooled results")
     args = ap.parse_args()
 
     if args.analyze:
-        reanalyze(args.analyze)
+        reanalyze(args.analyze, args.pooled_out)
         return
 
     rclpy.init()
