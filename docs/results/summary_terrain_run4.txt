@@ -1,0 +1,13 @@
+region             n  amcl mean  amcl p95  amcl max  yaw p95  odom mean  tilt p95
+---------------------------------------------------------------------------------
+all             1440     34.3cm    55.7cm    90.8cm    6.5d      0.0cm      6.2d
+bump_field       113     13.9cm    31.9cm    42.7cm    6.5d      0.0cm      6.1d
+floor           1124     32.7cm    53.1cm    90.8cm    6.4d      0.0cm      2.8d
+rough_iso_f      203     54.3cm    58.8cm    60.9cm    6.9d      0.0cm     10.0d
+
+tilt band        n   time  amcl mean   err growth
+-------------------------------------------------
+0-1 deg        912    63%     28.9cm     +0.21cm/s
+1-3 deg        317    22%     43.4cm     +0.32cm/s
+>3 deg         211    15%     44.0cm     +0.13cm/s
+correlation tilt vs error +0.38, tilt vs error growth +0.00
