@@ -1,0 +1,6 @@
+region             n  amcl mean  amcl p95  amcl max  yaw p95  odom mean  odom max
+---------------------------------------------------------------------------------
+all             1699     40.8cm    72.4cm    81.7cm    9.0d      0.6cm     0.6cm
+bump_field        86     20.6cm    32.1cm    32.3cm    4.7d      0.6cm     0.6cm
+floor           1031     33.0cm    67.8cm    68.0cm    5.8d      0.6cm     0.6cm
+rough_iso_f      582     57.8cm    74.3cm    81.7cm    9.5d      0.6cm     0.6cm
