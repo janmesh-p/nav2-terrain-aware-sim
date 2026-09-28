@@ -1,0 +1,2492 @@
+{
+ "min_top": 0.03,
+ "max_bottom": 0.5,
+ "max_height": 3.0,
+ "dropped_building_scale": 47,
+ "boxes": [
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_FuseBox_24/SM_FuseBox_01",
+   "min": [
+    -4.343,
+    17.586
+   ],
+   "max": [
+    -3.804,
+    18.0
+   ],
+   "top": 1.711
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_11/SM_PaletteA_01",
+   "min": [
+    -9.823,
+    0.472
+   ],
+   "max": [
+    -8.82,
+    1.685
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_12/SM_PaletteA_01",
+   "min": [
+    -9.826,
+    1.695
+   ],
+   "max": [
+    -8.823,
+    2.908
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_318/SM_PaletteA_01",
+   "min": [
+    -9.746,
+    6.922
+   ],
+   "max": [
+    -8.743,
+    8.135
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_319/SM_PaletteA_01",
+   "min": [
+    -9.823,
+    2.912
+   ],
+   "max": [
+    -8.82,
+    4.125
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_357/SM_PaletteA_01",
+   "min": [
+    -9.851,
+    -3.418
+   ],
+   "max": [
+    -8.848,
+    -2.205
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_358/SM_PaletteA_01",
+   "min": [
+    -9.848,
+    -2.201
+   ],
+   "max": [
+    -8.845,
+    -0.988
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_359/SM_PaletteA_01",
+   "min": [
+    -9.851,
+    -0.978
+   ],
+   "max": [
+    -8.848,
+    0.235
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_5/SM_PaletteA_01",
+   "min": [
+    -9.746,
+    4.482
+   ],
+   "max": [
+    -8.743,
+    5.695
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_6/SM_PaletteA_01",
+   "min": [
+    -9.743,
+    5.699
+   ],
+   "max": [
+    -8.74,
+    6.912
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_76/SM_PaletteA_01",
+   "min": [
+    -9.743,
+    10.894
+   ],
+   "max": [
+    -8.74,
+    12.107
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_77/SM_PaletteA_01",
+   "min": [
+    -9.746,
+    9.677
+   ],
+   "max": [
+    -8.743,
+    10.89
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_78/SM_PaletteA_01",
+   "min": [
+    -9.743,
+    8.454
+   ],
+   "max": [
+    -8.74,
+    9.667
+   ],
+   "top": 0.211
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PushcartA_02_22/SM_PushcartA_02",
+   "min": [
+    -7.063,
+    12.901
+   ],
+   "max": [
+    -5.194,
+    14.344
+   ],
+   "top": 0.377
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_RackFrame_159/SM_RackFrame_03/Section0",
+   "min": [
+    -9.791,
+    0.273
+   ],
+   "max": [
+    -8.842,
+    0.326
+   ],
+   "top": 2.808
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_RackFrame_161/SM_RackFrame_03/Section0",
+   "min": [
+    -9.791,
+    4.273
+   ],
+   "max": [
+    -8.842,
+    4.326
+   ],
+   "top": 2.808
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_RackFrame_163/SM_RackFrame_03/Section0",
+   "min": [
+    -9.791,
+    8.273
+   ],
+   "max": [
+    -8.842,
+    8.326
+   ],
+   "top": 2.808
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_RackFrame_165/SM_RackFrame_03/Section0",
+   "min": [
+    -9.791,
+    12.273
+   ],
+   "max": [
+    -8.842,
+    12.326
+   ],
+   "top": 2.808
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_RackFrame_167/SM_RackFrame_03/Section0",
+   "min": [
+    -9.791,
+    -3.727
+   ],
+   "max": [
+    -8.842,
+    -3.674
+   ],
+   "top": 2.808
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_Rackshield_43/SM_Rackshield_02",
+   "min": [
+    -9.907,
+    -3.798
+   ],
+   "max": [
+    -8.733,
+    -3.45
+   ],
+   "top": 0.5
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_Rackshield_50/SM_Rackshield_02",
+   "min": [
+    -9.907,
+    12.15
+   ],
+   "max": [
+    -8.733,
+    12.498
+   ],
+   "top": 0.5
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_WallA_InnerCorner10/SM_WallA_InnerCorner/Section0",
+   "min": [
+    6.419,
+    -12.2
+   ],
+   "max": [
+    9.42,
+    -9.2
+   ],
+   "top": 3.0
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_WallA_InnerCorner11/SM_WallA_InnerCorner/Section0",
+   "min": [
+    6.412,
+    15.0
+   ],
+   "max": [
+    9.412,
+    18.0
+   ],
+   "top": 3.0
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_WallA_InnerCorner12/SM_WallA_InnerCorner/Section0",
+   "min": [
+    -10.33,
+    15.0
+   ],
+   "max": [
+    -7.33,
+    18.0
+   ],
+   "top": 3.0
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_WallA_InnerCorner9_88/SM_WallA_InnerCorner/Section0",
+   "min": [
+    -10.33,
+    -12.2
+   ],
+   "max": [
+    -7.33,
+    -9.2
+   ],
+   "top": 3.0
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/SM_PaletteA_360/SM_PaletteA_01",
+   "min": [
+    -6.842,
+    13.005
+   ],
+   "max": [
+    -5.359,
+    14.362
+   ],
+   "top": 0.57
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_05/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.719,
+    9.073
+   ],
+   "max": [
+    -9.719,
+    9.296
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_05/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.662,
+    9.038
+   ],
+   "max": [
+    -9.576,
+    9.038
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_05/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    9.037
+   ],
+   "max": [
+    -9.525,
+    9.333
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_06/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.719,
+    9.073
+   ],
+   "max": [
+    -9.719,
+    9.296
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_06/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.662,
+    9.038
+   ],
+   "max": [
+    -9.576,
+    9.038
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_06/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    9.037
+   ],
+   "max": [
+    -9.525,
+    9.333
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_07/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.722,
+    9.077
+   ],
+   "max": [
+    -9.715,
+    9.299
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_07/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.667,
+    9.037
+   ],
+   "max": [
+    -9.581,
+    9.04
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_07/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.728,
+    9.033
+   ],
+   "max": [
+    -9.52,
+    9.337
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_09/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.529,
+    8.769
+   ],
+   "max": [
+    -9.529,
+    8.992
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_09/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.671,
+    9.027
+   ],
+   "max": [
+    -9.586,
+    9.027
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_09/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    8.732
+   ],
+   "max": [
+    -9.525,
+    9.029
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_10/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.719,
+    8.768
+   ],
+   "max": [
+    -9.719,
+    8.991
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_10/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.662,
+    8.734
+   ],
+   "max": [
+    -9.576,
+    8.734
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_10/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    8.732
+   ],
+   "max": [
+    -9.525,
+    9.029
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_11/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.529,
+    8.769
+   ],
+   "max": [
+    -9.529,
+    8.992
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_11/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.671,
+    9.027
+   ],
+   "max": [
+    -9.586,
+    9.027
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_11/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    8.732
+   ],
+   "max": [
+    -9.525,
+    9.029
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_12/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.281,
+    8.769
+   ],
+   "max": [
+    -9.281,
+    8.992
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_12/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.423,
+    9.027
+   ],
+   "max": [
+    -9.338,
+    9.027
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_12/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    8.732
+   ],
+   "max": [
+    -9.276,
+    9.029
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_14/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.474,
+    9.077
+   ],
+   "max": [
+    -9.466,
+    9.299
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_14/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.418,
+    9.037
+   ],
+   "max": [
+    -9.333,
+    9.04
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_14/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.479,
+    9.033
+   ],
+   "max": [
+    -9.271,
+    9.337
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_16/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.47,
+    9.073
+   ],
+   "max": [
+    -9.47,
+    9.296
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_16/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.413,
+    9.038
+   ],
+   "max": [
+    -9.328,
+    9.038
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_16/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    9.037
+   ],
+   "max": [
+    -9.276,
+    9.333
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_17/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.47,
+    8.768
+   ],
+   "max": [
+    -9.47,
+    8.991
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_17/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.413,
+    8.734
+   ],
+   "max": [
+    -9.328,
+    8.734
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_17/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    8.732
+   ],
+   "max": [
+    -9.276,
+    9.029
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_18/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.281,
+    8.769
+   ],
+   "max": [
+    -9.281,
+    8.992
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_18/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.423,
+    9.027
+   ],
+   "max": [
+    -9.338,
+    9.027
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_18/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    8.732
+   ],
+   "max": [
+    -9.276,
+    9.029
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_19/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.47,
+    9.073
+   ],
+   "max": [
+    -9.47,
+    9.296
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_19/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.413,
+    9.038
+   ],
+   "max": [
+    -9.328,
+    9.038
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_19/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    9.037
+   ],
+   "max": [
+    -9.276,
+    9.333
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_24/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    8.769
+   ],
+   "max": [
+    -9.041,
+    8.992
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_24/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    9.027
+   ],
+   "max": [
+    -9.098,
+    9.027
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_24/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    8.732
+   ],
+   "max": [
+    -9.037,
+    9.029
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_25/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    9.38
+   ],
+   "max": [
+    -9.041,
+    9.603
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_25/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    9.638
+   ],
+   "max": [
+    -9.098,
+    9.638
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_25/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.343
+   ],
+   "max": [
+    -9.037,
+    9.639
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_26/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.234,
+    9.077
+   ],
+   "max": [
+    -9.226,
+    9.299
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_26/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.179,
+    9.037
+   ],
+   "max": [
+    -9.093,
+    9.04
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_26/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.24,
+    9.033
+   ],
+   "max": [
+    -9.032,
+    9.337
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_27/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    9.379
+   ],
+   "max": [
+    -9.23,
+    9.602
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_27/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    9.345
+   ],
+   "max": [
+    -9.088,
+    9.345
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_27/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.343
+   ],
+   "max": [
+    -9.037,
+    9.639
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_28/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    9.073
+   ],
+   "max": [
+    -9.23,
+    9.296
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_28/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    9.038
+   ],
+   "max": [
+    -9.088,
+    9.038
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_28/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.037
+   ],
+   "max": [
+    -9.037,
+    9.333
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_29/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    8.768
+   ],
+   "max": [
+    -9.23,
+    8.991
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_29/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    8.734
+   ],
+   "max": [
+    -9.088,
+    8.734
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_29/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    8.732
+   ],
+   "max": [
+    -9.037,
+    9.029
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_30/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    8.769
+   ],
+   "max": [
+    -9.041,
+    8.992
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_30/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    9.027
+   ],
+   "max": [
+    -9.098,
+    9.027
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_30/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    8.732
+   ],
+   "max": [
+    -9.037,
+    9.029
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_31/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    9.073
+   ],
+   "max": [
+    -9.23,
+    9.296
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_31/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    9.038
+   ],
+   "max": [
+    -9.088,
+    9.038
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_31/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.037
+   ],
+   "max": [
+    -9.037,
+    9.333
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_32/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    9.38
+   ],
+   "max": [
+    -9.041,
+    9.603
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_32/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    9.638
+   ],
+   "max": [
+    -9.098,
+    9.638
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_32/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.343
+   ],
+   "max": [
+    -9.037,
+    9.639
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_36/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    9.91
+   ],
+   "max": [
+    -9.041,
+    10.133
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_36/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    10.168
+   ],
+   "max": [
+    -9.098,
+    10.168
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_36/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.873
+   ],
+   "max": [
+    -9.037,
+    10.169
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_37/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    10.521
+   ],
+   "max": [
+    -9.041,
+    10.744
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_37/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    10.778
+   ],
+   "max": [
+    -9.098,
+    10.778
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_37/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    10.484
+   ],
+   "max": [
+    -9.037,
+    10.78
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_38/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.234,
+    10.217
+   ],
+   "max": [
+    -9.226,
+    10.44
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_38/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.179,
+    10.178
+   ],
+   "max": [
+    -9.093,
+    10.181
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_38/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.24,
+    10.174
+   ],
+   "max": [
+    -9.032,
+    10.477
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_39/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    10.52
+   ],
+   "max": [
+    -9.23,
+    10.743
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_39/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    10.486
+   ],
+   "max": [
+    -9.088,
+    10.486
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_39/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    10.484
+   ],
+   "max": [
+    -9.037,
+    10.78
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_40/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    10.215
+   ],
+   "max": [
+    -9.041,
+    10.438
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_40/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    10.472
+   ],
+   "max": [
+    -9.098,
+    10.472
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_40/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    10.177
+   ],
+   "max": [
+    -9.037,
+    10.474
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_41/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    9.91
+   ],
+   "max": [
+    -9.041,
+    10.133
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_41/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    10.168
+   ],
+   "max": [
+    -9.098,
+    10.168
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_41/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.873
+   ],
+   "max": [
+    -9.037,
+    10.169
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_42/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    9.91
+   ],
+   "max": [
+    -9.041,
+    10.133
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_42/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    10.168
+   ],
+   "max": [
+    -9.098,
+    10.168
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_42/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    9.873
+   ],
+   "max": [
+    -9.037,
+    10.169
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_43/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    10.214
+   ],
+   "max": [
+    -9.23,
+    10.437
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_43/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    10.179
+   ],
+   "max": [
+    -9.088,
+    10.179
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_43/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    10.177
+   ],
+   "max": [
+    -9.037,
+    10.474
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_44/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    10.521
+   ],
+   "max": [
+    -9.041,
+    10.744
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_44/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    10.778
+   ],
+   "max": [
+    -9.098,
+    10.778
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_44/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    10.484
+   ],
+   "max": [
+    -9.037,
+    10.78
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_105/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.529,
+    11.203
+   ],
+   "max": [
+    -9.529,
+    11.426
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_105/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.671,
+    11.461
+   ],
+   "max": [
+    -9.586,
+    11.461
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_105/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    11.166
+   ],
+   "max": [
+    -9.525,
+    11.463
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_106/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.719,
+    11.202
+   ],
+   "max": [
+    -9.719,
+    11.425
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_106/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.662,
+    11.168
+   ],
+   "max": [
+    -9.576,
+    11.168
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_106/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    11.166
+   ],
+   "max": [
+    -9.525,
+    11.463
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_107/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.529,
+    11.203
+   ],
+   "max": [
+    -9.529,
+    11.426
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_107/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.671,
+    11.461
+   ],
+   "max": [
+    -9.586,
+    11.461
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_107/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    11.166
+   ],
+   "max": [
+    -9.525,
+    11.463
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_108/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.281,
+    11.203
+   ],
+   "max": [
+    -9.281,
+    11.426
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_108/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.423,
+    11.461
+   ],
+   "max": [
+    -9.338,
+    11.461
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_108/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    11.166
+   ],
+   "max": [
+    -9.276,
+    11.463
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_113/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.47,
+    11.202
+   ],
+   "max": [
+    -9.47,
+    11.425
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_113/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.413,
+    11.168
+   ],
+   "max": [
+    -9.328,
+    11.168
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_113/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    11.166
+   ],
+   "max": [
+    -9.276,
+    11.463
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_114/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.281,
+    11.203
+   ],
+   "max": [
+    -9.281,
+    11.426
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_114/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.423,
+    11.461
+   ],
+   "max": [
+    -9.338,
+    11.461
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_114/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    11.166
+   ],
+   "max": [
+    -9.276,
+    11.463
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_115/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.47,
+    11.507
+   ],
+   "max": [
+    -9.47,
+    11.73
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_115/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.413,
+    11.472
+   ],
+   "max": [
+    -9.328,
+    11.472
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_115/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    11.471
+   ],
+   "max": [
+    -9.276,
+    11.767
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_116/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.281,
+    11.814
+   ],
+   "max": [
+    -9.281,
+    12.037
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_116/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.423,
+    12.072
+   ],
+   "max": [
+    -9.338,
+    12.072
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_116/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    11.777
+   ],
+   "max": [
+    -9.276,
+    12.073
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_120/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    11.203
+   ],
+   "max": [
+    -9.041,
+    11.426
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_120/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    11.461
+   ],
+   "max": [
+    -9.098,
+    11.461
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_120/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    11.166
+   ],
+   "max": [
+    -9.037,
+    11.463
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_121/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    11.814
+   ],
+   "max": [
+    -9.041,
+    12.037
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_121/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    12.072
+   ],
+   "max": [
+    -9.098,
+    12.072
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_121/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    11.777
+   ],
+   "max": [
+    -9.037,
+    12.073
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_122/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.234,
+    11.511
+   ],
+   "max": [
+    -9.226,
+    11.733
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_122/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.179,
+    11.471
+   ],
+   "max": [
+    -9.093,
+    11.474
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_122/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.24,
+    11.467
+   ],
+   "max": [
+    -9.032,
+    11.771
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_123/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    11.813
+   ],
+   "max": [
+    -9.23,
+    12.036
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_123/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    11.779
+   ],
+   "max": [
+    -9.088,
+    11.779
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_123/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    11.777
+   ],
+   "max": [
+    -9.037,
+    12.073
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_124/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    11.507
+   ],
+   "max": [
+    -9.23,
+    11.73
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_124/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    11.472
+   ],
+   "max": [
+    -9.088,
+    11.472
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_124/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    11.471
+   ],
+   "max": [
+    -9.037,
+    11.767
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_125/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.23,
+    11.202
+   ],
+   "max": [
+    -9.23,
+    11.425
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_125/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.174,
+    11.168
+   ],
+   "max": [
+    -9.088,
+    11.168
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_125/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    11.166
+   ],
+   "max": [
+    -9.037,
+    11.463
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_126/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.041,
+    11.203
+   ],
+   "max": [
+    -9.041,
+    11.426
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_126/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.183,
+    11.461
+   ],
+   "max": [
+    -9.098,
+    11.461
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_126/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.235,
+    11.166
+   ],
+   "max": [
+    -9.037,
+    11.463
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_109/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.281,
+    9.915
+   ],
+   "max": [
+    -9.281,
+    10.138
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_109/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.423,
+    10.173
+   ],
+   "max": [
+    -9.338,
+    10.173
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_109/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    9.878
+   ],
+   "max": [
+    -9.276,
+    10.175
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_110/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.529,
+    9.915
+   ],
+   "max": [
+    -9.529,
+    10.138
+   ],
+   "top": 0.338
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_110/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.671,
+    10.173
+   ],
+   "max": [
+    -9.586,
+    10.173
+   ],
+   "top": 0.26
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_110/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    9.878
+   ],
+   "max": [
+    -9.525,
+    10.175
+   ],
+   "top": 0.352
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_111/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.719,
+    9.914
+   ],
+   "max": [
+    -9.719,
+    10.137
+   ],
+   "top": 0.595
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_111/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.662,
+    9.88
+   ],
+   "max": [
+    -9.576,
+    9.88
+   ],
+   "top": 0.517
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_111/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    9.878
+   ],
+   "max": [
+    -9.525,
+    10.175
+   ],
+   "top": 0.609
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_161/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.47,
+    9.914
+   ],
+   "max": [
+    -9.47,
+    10.137
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_161/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.413,
+    9.88
+   ],
+   "max": [
+    -9.328,
+    9.88
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_161/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    9.878
+   ],
+   "max": [
+    -9.276,
+    10.175
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_162/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.281,
+    9.915
+   ],
+   "max": [
+    -9.281,
+    10.138
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_162/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.423,
+    10.173
+   ],
+   "max": [
+    -9.338,
+    10.173
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_162/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.474,
+    9.878
+   ],
+   "max": [
+    -9.276,
+    10.175
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_112/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.529,
+    11.204
+   ],
+   "max": [
+    -9.529,
+    11.427
+   ],
+   "top": 0.593
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_112/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.671,
+    11.461
+   ],
+   "max": [
+    -9.586,
+    11.461
+   ],
+   "top": 0.515
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_112/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    11.166
+   ],
+   "max": [
+    -9.525,
+    11.463
+   ],
+   "top": 0.607
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_163/Visuals/FOF_Mesh_Label_1",
+   "min": [
+    -9.719,
+    9.914
+   ],
+   "max": [
+    -9.719,
+    10.137
+   ],
+   "top": 0.466
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_163/Visuals/FOF_Mesh_Label_6_Small",
+   "min": [
+    -9.662,
+    9.88
+   ],
+   "max": [
+    -9.576,
+    9.88
+   ],
+   "top": 0.388
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Warehouse_Empty_small_realtime/KLT_Bins/SmallKLT_Visual_163/Visuals/FOF_Mesh_Magenta_Box",
+   "min": [
+    -9.723,
+    9.878
+   ],
+   "max": [
+    -9.525,
+    10.175
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Forklift/S_ForkliftBody",
+   "min": [
+    2.839,
+    -2.806
+   ],
+   "max": [
+    5.444,
+    -0.551
+   ],
+   "top": 2.153
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Forklift/S_ForkliftFork/S_ForkliftFork",
+   "min": [
+    1.854,
+    -3.405
+   ],
+   "max": [
+    3.534,
+    -1.761
+   ],
+   "top": 1.049
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Forklift_01/S_ForkliftBody",
+   "min": [
+    -8.41,
+    -3.448
+   ],
+   "max": [
+    -6.097,
+    -2.234
+   ],
+   "top": 2.153
+  },
+  {
+   "path": "/World/warehouse_with_forklifts/Forklift_01/S_ForkliftFork/S_ForkliftFork",
+   "min": [
+    -9.591,
+    -3.415
+   ],
+   "max": [
+    -8.328,
+    -2.266
+   ],
+   "top": 1.049
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetA/SM_CardBoxA_01/SM_CardBoxA_01",
+   "min": [
+    -9.554,
+    -3.332
+   ],
+   "max": [
+    -8.854,
+    -2.832
+   ],
+   "top": 0.709
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetA/SM_CardBoxA_02/SM_CardBoxA_01",
+   "min": [
+    -9.554,
+    -2.808
+   ],
+   "max": [
+    -8.854,
+    -2.308
+   ],
+   "top": 0.709
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetA/SM_CardBoxA_04/SM_CardBoxA_01",
+   "min": [
+    -9.554,
+    -1.586
+   ],
+   "max": [
+    -8.854,
+    -1.086
+   ],
+   "top": 0.709
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetA/SM_CardBoxA_05/SM_CardBoxA_01",
+   "min": [
+    -9.554,
+    -0.892
+   ],
+   "max": [
+    -8.854,
+    -0.392
+   ],
+   "top": 0.709
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetA/SM_CardBoxA_06/SM_CardBoxA_01",
+   "min": [
+    -9.554,
+    -0.349
+   ],
+   "max": [
+    -8.854,
+    0.151
+   ],
+   "top": 0.709
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetA/SM_CardBoxC_04/SM_CardBoxC_01",
+   "min": [
+    -9.373,
+    -2.152
+   ],
+   "max": [
+    -8.873,
+    -1.652
+   ],
+   "top": 0.464
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetA/SM_CardBoxC_05/SM_CardBoxC_01",
+   "min": [
+    -9.373,
+    -2.152
+   ],
+   "max": [
+    -8.873,
+    -1.652
+   ],
+   "top": 0.719
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxA_2/SM_CardBoxA_02",
+   "min": [
+    -9.547,
+    1.64
+   ],
+   "max": [
+    -8.75,
+    2.276
+   ],
+   "top": 0.971
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxB_01/SM_CardBoxB_01",
+   "min": [
+    -9.32,
+    1.133
+   ],
+   "max": [
+    -8.82,
+    1.633
+   ],
+   "top": 0.708
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxC_05/SM_CardBoxC_01",
+   "min": [
+    -9.808,
+    1.709
+   ],
+   "max": [
+    -9.308,
+    2.209
+   ],
+   "top": 0.48
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxC_06/SM_CardBoxC_01",
+   "min": [
+    -9.299,
+    1.719
+   ],
+   "max": [
+    -8.799,
+    2.219
+   ],
+   "top": 0.465
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxB_02/SM_CardBoxB_01",
+   "min": [
+    -9.32,
+    0.602
+   ],
+   "max": [
+    -8.82,
+    1.102
+   ],
+   "top": 0.71
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxC_08/SM_CardBoxC_01",
+   "min": [
+    -9.324,
+    2.996
+   ],
+   "max": [
+    -8.824,
+    3.496
+   ],
+   "top": 0.463
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxC_09/SM_CardBoxC_01",
+   "min": [
+    -9.315,
+    3.505
+   ],
+   "max": [
+    -8.815,
+    4.005
+   ],
+   "top": 0.463
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxA_03/SM_CardBoxA_02",
+   "min": [
+    -9.4,
+    3.114
+   ],
+   "max": [
+    -8.764,
+    3.911
+   ],
+   "top": 0.97
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/BoxSetB/SM_CardBoxA_01/SM_CardBoxA_01",
+   "min": [
+    -9.531,
+    2.31
+   ],
+   "max": [
+    -8.831,
+    2.81
+   ],
+   "top": 0.701
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/Misc/SM_BarelPlastic_A_01/SM_BarelPlastic_A_01",
+   "min": [
+    -9.34,
+    4.701
+   ],
+   "max": [
+    -8.74,
+    5.409
+   ],
+   "top": 1.11
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/Misc/SM_BarelPlastic_A_02/SM_BarelPlastic_A_02",
+   "min": [
+    -9.382,
+    5.637
+   ],
+   "max": [
+    -8.782,
+    6.345
+   ],
+   "top": 1.039
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/Misc/SM_BarelPlastic_A_03/SM_BarelPlastic_A_03",
+   "min": [
+    -9.41,
+    6.412
+   ],
+   "max": [
+    -8.81,
+    7.012
+   ],
+   "top": 1.11
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/Misc/SM_BarelPlastic_B_01/SM_BarelPlastic_B_01",
+   "min": [
+    -9.351,
+    7.505
+   ],
+   "max": [
+    -8.751,
+    8.213
+   ],
+   "top": 0.799
+  },
+  {
+   "path": "/World/warehouse_extras/Extras/Misc/SM_BarelPlastic_B_02/SM_BarelPlastic_B_02",
+   "min": [
+    -9.685,
+    6.978
+   ],
+   "max": [
+    -9.085,
+    7.686
+   ],
+   "top": 0.745
+  }
+ ]
+}

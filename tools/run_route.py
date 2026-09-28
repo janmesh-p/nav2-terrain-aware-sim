@@ -39,7 +39,17 @@ def main():
     ap.add_argument("--route", default=str(REPO / "bringup" / "routes" / "terrain_tour.yaml"))
     ap.add_argument("--label", default="run")
     ap.add_argument("--leg-timeout", type=float, default=180.0, help="seconds per leg")
+    ap.add_argument("--skip-validate", action="store_true",
+                    help="drive even if tools/validate_route.py rejects the route")
     args = ap.parse_args()
+
+    if not args.skip_validate:
+        from validate_route import validate
+        terrain = str(REPO / "scenes" / "configs" / "warehouse_terrain.yaml")
+        scene = str(REPO / "scenes" / "scene_obstacles.json")
+        if not validate(args.route, terrain, 1.0, scene, None):
+            print("route failed validation; fix the goals or pass --skip-validate")
+            return
 
     route = yaml.safe_load(open(args.route))
     rclpy.init()
