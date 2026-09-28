@@ -59,7 +59,14 @@ SHARED_COSTMAP = {"footprint_padding": 0.10}
 SHARED_INFLATION = {"cost_scaling_factor": 3.0, "inflation_radius": 0.8}
 
 
+# AMCL matches a scan that starts above all terrain (see terrain_nav.launch.py).
+SHARED_AMCL = {"scan_topic": "/scan_localization"}
+
+
 def apply_shared(cfg: dict) -> None:
+    amcl = cfg.get("amcl", {})
+    amcl = amcl.get("amcl", amcl).get("ros__parameters", amcl)
+    amcl.update(SHARED_AMCL)
     for costmap in ("local_costmap", "global_costmap"):
         p = costmap_params(cfg, costmap)
         p.update(SHARED_COSTMAP)
