@@ -1,0 +1,66 @@
+{
+  "route": "terrain_tour",
+  "label": "terrain_run3",
+  "legs": [
+    {
+      "name": "bump_entry",
+      "goal": [
+        -3.8,
+        -1.0
+      ],
+      "result": "failed",
+      "sim_seconds": 1.0,
+      "recoveries": 0
+    },
+    {
+      "name": "bump_exit",
+      "goal": [
+        0.2,
+        -1.0
+      ],
+      "result": "succeeded",
+      "sim_seconds": 40.22,
+      "recoveries": 3
+    },
+    {
+      "name": "rough_entry",
+      "goal": [
+        -3.6,
+        4.0
+      ],
+      "result": "failed",
+      "sim_seconds": 8.73,
+      "recoveries": 3
+    },
+    {
+      "name": "rough_exit",
+      "goal": [
+        -8.4,
+        4.0
+      ],
+      "result": "failed",
+      "sim_seconds": 20.67,
+      "recoveries": 3
+    },
+    {
+      "name": "ramp_entry",
+      "goal": [
+        -6.0,
+        -3.2
+      ],
+      "result": "failed",
+      "sim_seconds": 23.33,
+      "recoveries": 16
+    },
+    {
+      "name": "ramp_exit",
+      "goal": [
+        -6.0,
+        -10.4
+      ],
+      "result": "failed",
+      "sim_seconds": 28.92,
+      "recoveries": 8
+    }
+  ]
+}
