@@ -43,13 +43,29 @@ LAYER_PARAMS = {
     "tilt_hold_s": 0.5,
     "window": 0.5,
     "min_valid_fraction": 0.25,
-    "slope_free_deg": 5.0,
+    "slope_free_deg": 10.0,
     "slope_max_cost_deg": 20.0,
     "slope_lethal_deg": 25.0,
     "roughness_free": 0.005,
     "roughness_max_cost": 0.025,
     "max_cost": 252,
 }
+
+
+# Applied to BOTH baseline and terrain, so the A/B differs only by the layer.
+# Stock padding (0.25 m) and slow inflation decay (0.3) leave a 2 m ramp
+# with lethal edges nearly lethal across its whole width.
+SHARED_COSTMAP = {"footprint_padding": 0.10}
+SHARED_INFLATION = {"cost_scaling_factor": 3.0, "inflation_radius": 0.8}
+
+
+def apply_shared(cfg: dict) -> None:
+    for costmap in ("local_costmap", "global_costmap"):
+        p = costmap_params(cfg, costmap)
+        p.update(SHARED_COSTMAP)
+        for name in p.get("plugins", []):
+            if "inflation" in name and isinstance(p.get(name), dict):
+                p[name].update(SHARED_INFLATION)
 
 
 def costmap_params(cfg: dict, name: str) -> dict:
@@ -80,6 +96,7 @@ def main() -> None:
     with open(args.src) as f:
         base = yaml.safe_load(f)
 
+    apply_shared(base)
     terrain = copy.deepcopy(base)
     for costmap in ("local_costmap", "global_costmap"):
         add_layer(terrain, costmap)

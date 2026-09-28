@@ -157,7 +157,7 @@ local_costmap:
     ros__parameters:
       update_frequency: 5.0
       publish_frequency: 2.0
-      footprint_padding: 0.25
+      footprint_padding: 0.1
       global_frame: odom
       robot_base_frame: base_link
       use_sim_time: true
@@ -176,8 +176,8 @@ local_costmap:
       inflation_layer:
         plugin: nav2_costmap_2d::InflationLayer
         enabled: true
-        cost_scaling_factor: 0.3
-        inflation_radius: 1.0
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.8
       hesai_voxel_layer:
         plugin: nav2_costmap_2d::VoxelLayer
         enabled: true
@@ -242,7 +242,7 @@ local_costmap:
         tilt_hold_s: 0.5
         window: 0.5
         min_valid_fraction: 0.25
-        slope_free_deg: 5.0
+        slope_free_deg: 10.0
         slope_max_cost_deg: 20.0
         slope_lethal_deg: 25.0
         roughness_free: 0.005
@@ -257,7 +257,7 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
-      footprint_padding: 0.25
+      footprint_padding: 0.1
       update_frequency: 1.0
       publish_frequency: 1.0
       global_frame: map
@@ -289,8 +289,8 @@ global_costmap:
         map_subscribe_transient_local: true
       inflation_layer:
         plugin: nav2_costmap_2d::InflationLayer
-        cost_scaling_factor: 0.3
-        inflation_radius: 1.0
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.8
       always_send_full_costmap: true
       terrain_layer:
         plugin: terrain_costmap::TerrainLayer
@@ -314,7 +314,7 @@ global_costmap:
         tilt_hold_s: 0.5
         window: 0.5
         min_valid_fraction: 0.25
-        slope_free_deg: 5.0
+        slope_free_deg: 10.0
         slope_max_cost_deg: 20.0
         slope_lethal_deg: 25.0
         roughness_free: 0.005
