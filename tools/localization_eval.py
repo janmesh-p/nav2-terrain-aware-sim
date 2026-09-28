@@ -358,26 +358,43 @@ def episode_analysis(rows: list, seed: int = 0) -> dict | None:
             "pearson_tilt_vs_error": level_r}
 
 
-def compare(ep_deltas: list, ctrl_deltas: list, seed: int = 0, n_perm: int = 5000) -> dict:
-    """Mean difference with a one-sided permutation p-value (episodes > control)."""
+def compare(ep_deltas: list, ctrl_deltas: list, seed: int = 0, n_perm: int = 5000,
+            n_boot: int = 5000) -> dict:
+    """Median difference, episodes minus control, with a one-sided permutation
+    p-value and a bootstrap 95% interval.
+
+    Medians, because flat-floor windows occasionally catch AMCL snapping back
+    from a large failure (hundreds of cm), which would dominate a mean.
+    """
     a, b = np.asarray(ep_deltas, float), np.asarray(ctrl_deltas, float)
     out = {"episodes": len(a), "controls": len(b)}
     if len(a) == 0 or len(b) == 0:
         return out
-    diff = a.mean() - b.mean()
-    pooled = np.concatenate([a, b])
     rng = np.random.default_rng(seed)
+    diff = float(np.median(a) - np.median(b))
+
+    pooled = np.concatenate([a, b])
     count = 0
     for _ in range(n_perm):
         rng.shuffle(pooled)
-        if pooled[:len(a)].mean() - pooled[len(a):].mean() >= diff:
+        if np.median(pooled[:len(a)]) - np.median(pooled[len(a):]) >= diff:
             count += 1
+
+    boots = np.array([
+        np.median(rng.choice(a, len(a))) - np.median(rng.choice(b, len(b)))
+        for _ in range(n_boot)
+    ])
+    lo, hi = np.percentile(boots, [2.5, 97.5])
+
     out.update({
+        "episode_median_delta_cm": float(np.median(a)),
         "episode_mean_delta_cm": float(a.mean()),
         "episode_share_worse": float((a > 0).mean()),
+        "control_median_delta_cm": float(np.median(b)),
         "control_mean_delta_cm": float(b.mean()),
         "control_share_worse": float((b > 0).mean()),
-        "difference_cm": float(diff),
+        "median_difference_cm": diff,
+        "ci95_cm": [float(lo), float(hi)],
         "p_value_one_sided": (count + 1) / (n_perm + 1),
     })
     return out
@@ -403,14 +420,16 @@ def format_tables(summary: list, epi: dict | None, stats: dict | None) -> str:
         for e in epi["episodes"]:
             lines.append(f"{e['t_start']:>8.1f} s {e['duration_s']:>5.1f}s{e['peak_tilt_deg']:>9.1f}d"
                          f"{e['region']:>15}{e['error_before_cm']:>7.1f}cm{e['delta_cm']:>+8.1f}cm")
-    if stats and "difference_cm" in stats:
+    if stats and "median_difference_cm" in stats:
+        lo, hi = stats["ci95_cm"]
         lines += [
             "",
-            f"tilt episodes  n={stats['episodes']:<4} mean change {stats['episode_mean_delta_cm']:+6.1f} cm, "
-            f"worse in {100 * stats['episode_share_worse']:.0f}%",
-            f"flat control   n={stats['controls']:<4} mean change {stats['control_mean_delta_cm']:+6.1f} cm, "
-            f"worse in {100 * stats['control_share_worse']:.0f}%",
-            f"difference {stats['difference_cm']:+.1f} cm, one-sided permutation p = {stats['p_value_one_sided']:.3f}",
+            f"tilt episodes  n={stats['episodes']:<4} median change {stats['episode_median_delta_cm']:+6.1f} cm "
+            f"(mean {stats['episode_mean_delta_cm']:+.1f}), worse in {100 * stats['episode_share_worse']:.0f}%",
+            f"flat control   n={stats['controls']:<4} median change {stats['control_median_delta_cm']:+6.1f} cm "
+            f"(mean {stats['control_mean_delta_cm']:+.1f}), worse in {100 * stats['control_share_worse']:.0f}%",
+            f"median difference {stats['median_difference_cm']:+.1f} cm, 95% CI [{lo:+.1f}, {hi:+.1f}], "
+            f"one-sided permutation p = {stats['p_value_one_sided']:.3f}",
         ]
     return "\n".join(lines)
 
@@ -450,7 +469,7 @@ def _episode_panels(ax_bar, ax_box, episodes: list, controls: list, stats: dict 
     ax_box.set_ylabel("AMCL error change [cm]")
     title = "Tilt vs flat floor"
     if stats and "p_value_one_sided" in stats:
-        title += f" (diff {stats['difference_cm']:+.1f} cm, p={stats['p_value_one_sided']:.3f})"
+        title += f" (median diff {stats['median_difference_cm']:+.1f} cm, p={stats['p_value_one_sided']:.3f})"
     ax_box.set_title(title)
     ax_box.grid(alpha=0.3, axis="y")
 
@@ -573,11 +592,11 @@ def reanalyze(csv_paths: list, pooled_out: str | None = None) -> None:
     by_region = {}
     for e in all_eps:
         by_region.setdefault(e["region"], []).append(e["delta_cm"])
-    lines.append(f"{'region':<14}{'episodes':>9}{'mean change':>13}{'worse':>8}")
+    lines.append(f"{'region':<14}{'episodes':>9}{'median change':>15}{'worse':>8}")
     lines.append("-" * 44)
     for r, d in sorted(by_region.items()):
         d = np.asarray(d)
-        lines.append(f"{r:<14}{len(d):>9}{d.mean():>+11.1f}cm{100 * (d > 0).mean():>7.0f}%")
+        lines.append(f"{r:<14}{len(d):>9}{np.median(d):>+13.1f}cm{100 * (d > 0).mean():>7.0f}%")
     lines += ["", format_tables([], None, stats).strip()]
     text = "\n".join(lines)
     (out / "pooled_summary.txt").write_text(text + "\n")
