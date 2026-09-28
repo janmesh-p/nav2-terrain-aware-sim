@@ -72,6 +72,40 @@ def _validate(cfg: dict) -> None:
             raise ValueError(f"patch '{p['name']}': unknown material '{p['material']}'")
 
 
+def _corners(pose: dict, length: float, width: float) -> np.ndarray:
+    yaw = np.radians(pose.get("yaw_deg", 0.0))
+    c, s = np.cos(yaw), np.sin(yaw)
+    local = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]], float) * [length / 2, width / 2]
+    return local @ np.array([[c, -s], [s, c]]).T + [pose["x"], pose["y"]]
+
+
+def _seg_point(p, a, b) -> float:
+    ab = b - a
+    t = np.clip(np.dot(p - a, ab) / max(np.dot(ab, ab), 1e-12), 0.0, 1.0)
+    return float(np.linalg.norm(p - (a + t * ab)))
+
+
+def patch_gap(pa: dict, pb: dict) -> float:
+    """Edge-to-edge distance between two rotated rectangles (0 if they touch).
+
+    Separating-axis overlap test, then vertex-to-edge distances both ways.
+    """
+    A = _corners(pa["pose"], pa["size"]["length"], pa["size"]["width"])
+    B = _corners(pb["pose"], pb["size"]["length"], pb["size"]["width"])
+    overlap = True
+    for poly in (A, B):
+        for i in range(4):
+            e = poly[(i + 1) % 4] - poly[i]
+            n = np.array([-e[1], e[0]])
+            pa_, pb_ = A @ n, B @ n
+            if pa_.max() < pb_.min() or pb_.max() < pa_.min():
+                overlap = False
+    if overlap:
+        return 0.0
+    d = min(_seg_point(p, Q[i], Q[(i + 1) % 4]) for P, Q in ((A, B), (B, A)) for p in P for i in range(4))
+    return d
+
+
 def _patch_rng(seed: int, name: str) -> np.random.Generator:
     # Seeded per patch name so adding or reordering patches does not
     # change the others.
@@ -124,6 +158,16 @@ def generate(cfg: dict) -> TerrainResult:
             pose=dict(spec["pose"]), length=grid.length, width=grid.width,
             x=x, y=y, height=h, slope=s, roughness=r, summary=summary,
         ))
+
+    min_gap = cfg.get("min_patch_gap")
+    if min_gap is not None:
+        specs = cfg["patches"]
+        for i in range(len(specs)):
+            for j in range(i + 1, len(specs)):
+                g = patch_gap(specs[i], specs[j])
+                if g < float(min_gap):
+                    warnings.append(f"{specs[i]['name']} and {specs[j]['name']} are {g:.2f} m apart, "
+                                    f"minimum is {float(min_gap):.1f} m")
 
     raster, overlaps = rasterize(patches, float(cfg.get("ground_truth_resolution", res)))
     if overlaps:

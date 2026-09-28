@@ -1,18 +1,18 @@
 {
   "generator_version": "0.1.0",
-  "git_commit": "71232d8",
-  "created_utc": "2026-09-28T03:08:04+00:00",
+  "git_commit": "f74bd11",
+  "created_utc": "2026-09-28T04:02:44+00:00",
   "frame": "Isaac Sim world, assumed equal to Nav2 map frame",
   "raster": {
     "file": "terrain_ground_truth.npz",
     "origin_xy": [
-      -8.0,
-      -10.0
+      -7.0,
+      -8.0
     ],
     "resolution": 0.05,
     "shape": [
-      311,
-      151
+      462,
+      222
     ],
     "row0": "minimum y"
   },
@@ -23,8 +23,8 @@
       "type": "ramp",
       "material": "concrete",
       "pose": {
-        "x": -3.0,
-        "y": -7.0,
+        "x": 3.03,
+        "y": 12.02,
         "yaw_deg": 90.0
       },
       "size": {
@@ -45,9 +45,9 @@
       "type": "bumps",
       "material": "packed_gravel",
       "pose": {
-        "x": -2.0,
-        "y": -1.0,
-        "yaw_deg": 0.0
+        "x": -5.47,
+        "y": 2.02,
+        "yaw_deg": 90.0
       },
       "size": {
         "length": 3.0,
@@ -67,8 +67,8 @@
       "type": "iso8608",
       "material": "loose_gravel",
       "pose": {
-        "x": -6.0,
-        "y": 4.0,
+        "x": -3.47,
+        "y": -6.48,
         "yaw_deg": 0.0
       },
       "size": {
@@ -133,8 +133,8 @@
         "name": "ramp_7deg",
         "type": "ramp",
         "pose": {
-          "x": -3.0,
-          "y": -7.0,
+          "x": 3.03,
+          "y": 12.02,
           "yaw_deg": 90.0
         },
         "size": {
@@ -151,9 +151,9 @@
         "name": "bump_field",
         "type": "bumps",
         "pose": {
-          "x": -2.0,
-          "y": -1.0,
-          "yaw_deg": 0.0
+          "x": -5.47,
+          "y": 2.02,
+          "yaw_deg": 90.0
         },
         "size": {
           "length": 3.0,
@@ -177,8 +177,8 @@
         "name": "rough_iso_f",
         "type": "iso8608",
         "pose": {
-          "x": -6.0,
-          "y": 4.0,
+          "x": -3.47,
+          "y": -6.48,
           "yaw_deg": 0.0
         },
         "size": {
@@ -192,6 +192,7 @@
         },
         "material": "loose_gravel"
       }
-    ]
+    ],
+    "min_patch_gap": 5.0
   }
 }

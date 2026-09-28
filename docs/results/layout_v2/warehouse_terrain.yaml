@@ -1,0 +1,56 @@
+# Terrain layout for the Carter warehouse scene.
+# Poses are in the Isaac Sim world frame, which matches the Nav2 map frame
+# for this scene. Robot spawns at (-6.0, -1.0), yaw 180 deg.
+
+seed: 7
+resolution: 0.05              # heightfield sample spacing, m
+ground_truth_resolution: 0.05 # world raster spacing, m
+roughness_window: 0.4         # plane-fit window for roughness, m (about wheelbase scale)
+z_offset: 0.002               # lift above floor to avoid z-fighting, m
+root_prim: /World/Terrain
+
+nav2_map: ~/IsaacSim-ros_workspaces/jazzy_ws/src/navigation/carter_navigation/maps/carter_warehouse_navigation.yaml
+placement_clearance: 0.5      # free space required around each patch, m
+
+materials:
+  concrete:
+    static_friction: 0.9
+    dynamic_friction: 0.8
+    restitution: 0.0
+    color: [0.58, 0.58, 0.56]
+  packed_gravel:
+    static_friction: 0.7
+    dynamic_friction: 0.6
+    restitution: 0.05
+    color: [0.47, 0.42, 0.35]
+  loose_gravel:
+    static_friction: 0.55
+    dynamic_friction: 0.45
+    restitution: 0.05
+    color: [0.40, 0.36, 0.30]
+
+patches:
+  - name: ramp_7deg
+    type: ramp
+    pose: {x: -3.0, y: -7.0, yaw_deg: 90.0}
+    size: {length: 6.0, width: 2.0}
+    params: {grade_deg: 7.0, plateau_length: 1.5}
+    material: concrete
+
+  - name: bump_field
+    type: bumps
+    pose: {x: -2.0, y: -1.0, yaw_deg: 0.0}
+    size: {length: 3.0, width: 3.0}
+    params:
+      count: 14
+      height_range: [0.03, 0.07]
+      sigma_range: [0.12, 0.25]
+      edge_taper: 0.3
+    material: packed_gravel
+
+  - name: rough_iso_f
+    type: iso8608
+    pose: {x: -6.0, y: 4.0, yaw_deg: 0.0}
+    size: {length: 4.0, width: 3.0}
+    params: {road_class: F, waviness: 2.0, edge_taper: 0.4}
+    material: loose_gravel

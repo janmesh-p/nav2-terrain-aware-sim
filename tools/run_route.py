@@ -12,6 +12,7 @@ import argparse
 import datetime as dt
 import json
 import math
+import time
 import pathlib
 
 import rclpy
@@ -40,6 +41,8 @@ def main():
     ap.add_argument("--route", default=str(REPO / "bringup" / "routes" / "terrain_tour.yaml"))
     ap.add_argument("--label", default="run")
     ap.add_argument("--leg-timeout", type=float, default=180.0, help="seconds per leg")
+    ap.add_argument("--dwell", type=float, default=7.0,
+                    help="seconds to hold at each goal before the next one (5 to 10 recommended)")
     ap.add_argument("--truth-tolerance", type=float, default=0.5,
                     help="max true distance to goal [m] for a leg to count as succeeded")
     ap.add_argument("--gt-topic", default="/ground_truth_tf")
@@ -130,6 +133,14 @@ def main():
             "recoveries": int(fb.number_of_recoveries) if fb is not None else None,
         }
         legs.append(leg)
+
+        # Hold still so the robot settles and AMCL can converge before the
+        # next goal. Wall clock, so a slow simulator still gets a real pause.
+        if args.dwell > 0:
+            nav.get_logger().info(f"   holding {args.dwell:.0f} s")
+            end = time.monotonic() + args.dwell
+            while time.monotonic() < end:
+                rclpy.spin_once(nav, timeout_sec=0.1)
         nav.get_logger().info(
             f"   {leg['result']} in {leg['sim_seconds']} s, truly {dist:.2f} m from goal")
         prev = (wp["x"], wp["y"])
