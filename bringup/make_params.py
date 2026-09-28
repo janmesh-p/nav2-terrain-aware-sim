@@ -37,7 +37,7 @@ LAYER_PARAMS = {
     "max_step": 0.10,
     "step_radius": 0.2,
     "vertical_confirm": 2,
-    "imu_topic": "/chassis/imu",
+    "imu_topic": "",
     "tilt_gate_deg": 3.0,
     "tilt_trust_tol_deg": 1.0,
     "tilt_hold_s": 0.5,
