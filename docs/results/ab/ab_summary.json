@@ -1,0 +1,221 @@
+{
+  "baseline": {
+    "runs": [
+      "baseline_run1",
+      "baseline_run2",
+      "baseline_run3"
+    ],
+    "n_runs": 3,
+    "full_route_success": 2,
+    "leg_success": {
+      "bump_entry": [
+        3,
+        3
+      ],
+      "bump_exit": [
+        3,
+        3
+      ],
+      "rough_entry": [
+        3,
+        3
+      ],
+      "rough_exit": [
+        2,
+        3
+      ],
+      "ramp_entry": [
+        2,
+        3
+      ],
+      "ramp_exit": [
+        2,
+        3
+      ]
+    },
+    "leg_median_time_s": {
+      "bump_entry": 9.72,
+      "bump_exit": 21.9,
+      "rough_entry": 15.18,
+      "rough_exit": 38.26,
+      "ramp_entry": 56.86,
+      "ramp_exit": 31.535
+    },
+    "recoveries_median": 28.0,
+    "localized_runs": 3,
+    "amcl_median_cm": 44.872121024731435,
+    "amcl_p95_cm": 159.97310046416703,
+    "amcl_rough_median_cm": 78.52895992751932,
+    "rough_exposure_s": 60.300003144000016,
+    "tilt_p95_deg": 10.247964211214537,
+    "runs_lost": 2,
+    "per_run_localization": {
+      "baseline_run1": {
+        "amcl_median_cm": 44.872121024731435,
+        "amcl_p95_cm": 159.97310046416703,
+        "amcl_max_cm": 249.16065309250985,
+        "lost": true,
+        "amcl_rough_median_cm": 146.29931361259122,
+        "rough_exposure_s": 60.00000312900001,
+        "tilt_p95_deg": 8.376296114240716,
+        "tilt_max_deg": 16.395962933168803
+      },
+      "baseline_run2": {
+        "amcl_median_cm": 63.57804855366594,
+        "amcl_p95_cm": 68.11262350126833,
+        "amcl_max_cm": 119.90515878492162,
+        "lost": false,
+        "amcl_rough_median_cm": 65.7098948280035,
+        "rough_exposure_s": 172.90000901800005,
+        "tilt_p95_deg": 12.616840233837053,
+        "tilt_max_deg": 17.329550597020003
+      },
+      "baseline_run3": {
+        "amcl_median_cm": 12.231720679977304,
+        "amcl_p95_cm": 315.06680580607406,
+        "amcl_max_cm": 715.680646201922,
+        "lost": true,
+        "amcl_rough_median_cm": 78.52895992751932,
+        "rough_exposure_s": 60.300003144000016,
+        "tilt_p95_deg": 10.247964211214537,
+        "tilt_max_deg": 15.291583303784376
+      }
+    },
+    "tilt_episode_test": {
+      "episodes": 18,
+      "controls": 296,
+      "episode_median_delta_cm": 8.917784088672928,
+      "episode_mean_delta_cm": 13.49094214635505,
+      "episode_share_worse": 0.7222222222222222,
+      "control_median_delta_cm": -1.159772323910957e-05,
+      "control_mean_delta_cm": -21.601129740748085,
+      "control_share_worse": 0.4594594594594595,
+      "median_difference_cm": 8.917795686396166,
+      "ci95_cm": [
+        0.1700518507891753,
+        25.74568973757792
+      ],
+      "p_value_one_sided": 0.0001999600079984003
+    }
+  },
+  "terrain": {
+    "runs": [
+      "terrain_run2",
+      "terrain_run4",
+      "terrain_run5",
+      "terrain_run6",
+      "terrain_run7",
+      "terrain_run8"
+    ],
+    "n_runs": 6,
+    "full_route_success": 0,
+    "leg_success": {
+      "bump_entry": [
+        6,
+        6
+      ],
+      "bump_exit": [
+        6,
+        6
+      ],
+      "rough_entry": [
+        6,
+        6
+      ],
+      "rough_exit": [
+        4,
+        6
+      ],
+      "ramp_entry": [
+        1,
+        6
+      ],
+      "ramp_exit": [
+        0,
+        6
+      ]
+    },
+    "leg_median_time_s": {
+      "bump_entry": 9.375,
+      "bump_exit": 13.66,
+      "rough_entry": 15.14,
+      "rough_exit": 53.97,
+      "ramp_entry": 70.63,
+      "ramp_exit": null
+    },
+    "recoveries_median": 50.0,
+    "localized_runs": 5,
+    "amcl_median_cm": 48.97554488394194,
+    "amcl_p95_cm": 75.92537140175453,
+    "amcl_rough_median_cm": 53.25333495020623,
+    "rough_exposure_s": 50.43333596300001,
+    "tilt_p95_deg": 7.119514384347916,
+    "runs_lost": 2,
+    "per_run_localization": {
+      "terrain_run2": {
+        "amcl_median_cm": 43.50513015950555,
+        "amcl_p95_cm": 72.3900630874779,
+        "amcl_max_cm": 81.69078461099227,
+        "lost": false,
+        "amcl_rough_median_cm": 48.61063200469347,
+        "rough_exposure_s": 58.20000303500001
+      },
+      "terrain_run4": {
+        "amcl_median_cm": 32.87849990104262,
+        "amcl_p95_cm": 55.72154963780287,
+        "amcl_max_cm": 90.84359549563543,
+        "lost": false,
+        "amcl_rough_median_cm": 53.25333495020623,
+        "rough_exposure_s": 20.300001058999996,
+        "tilt_p95_deg": 6.229805813462395,
+        "tilt_max_deg": 11.64123539214885
+      },
+      "terrain_run5": {
+        "amcl_median_cm": 51.43215017832842,
+        "amcl_p95_cm": 701.4166347248423,
+        "amcl_max_cm": 701.4169024105873,
+        "lost": true,
+        "amcl_rough_median_cm": 51.44925139756289,
+        "rough_exposure_s": 50.43333596300001,
+        "tilt_p95_deg": 7.558322707506877,
+        "tilt_max_deg": 15.747101619728783
+      },
+      "terrain_run6": {
+        "amcl_median_cm": 48.97554488394194,
+        "amcl_p95_cm": 75.92537140175453,
+        "amcl_max_cm": 81.67334896638916,
+        "lost": false,
+        "amcl_rough_median_cm": 61.82116506402995,
+        "rough_exposure_s": 36.500001903000005,
+        "tilt_p95_deg": 10.211691981042765,
+        "tilt_max_deg": 15.556794581742338
+      },
+      "terrain_run8": {
+        "amcl_median_cm": 61.46511668549428,
+        "amcl_p95_cm": 654.6968257069303,
+        "amcl_max_cm": 654.6974259304533,
+        "lost": true,
+        "amcl_rough_median_cm": 91.95178486100463,
+        "rough_exposure_s": 50.866669318999996,
+        "tilt_p95_deg": 6.680706061188956,
+        "tilt_max_deg": 17.890238528031745
+      }
+    },
+    "tilt_episode_test": {
+      "episodes": 17,
+      "controls": 320,
+      "episode_median_delta_cm": 10.794541471429923,
+      "episode_mean_delta_cm": 10.983821971189025,
+      "episode_share_worse": 0.6470588235294118,
+      "control_median_delta_cm": 4.0668219817519e-05,
+      "control_mean_delta_cm": 48.88232936639522,
+      "control_share_worse": 0.60625,
+      "median_difference_cm": 10.794500803210106,
+      "ci95_cm": [
+        -8.888427197701713,
+        36.86431087127605
+      ],
+      "p_value_one_sided": 0.0015996800639872025
+    }
+  }
+}
