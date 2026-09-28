@@ -8,5 +8,5 @@ waypoints:
   - {name: bump_exit,   x:  0.2, y: -1.0}
   - {name: rough_entry, x: -3.6, y:  4.0}
   - {name: rough_exit,  x: -8.4, y:  4.0}
-  - {name: ramp_entry,  x: -6.0, y: -3.2}
-  - {name: ramp_exit,   x: -6.0, y: -10.4}
+  - {name: ramp_entry,  x: -3.0, y: -3.2}
+  - {name: ramp_exit,   x: -3.0, y: -10.4}

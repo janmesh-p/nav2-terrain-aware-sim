@@ -32,7 +32,7 @@ materials:
 patches:
   - name: ramp_7deg
     type: ramp
-    pose: {x: -6.0, y: -7.0, yaw_deg: 90.0}
+    pose: {x: -3.0, y: -7.0, yaw_deg: 90.0}
     size: {length: 6.0, width: 2.0}
     params: {grade_deg: 7.0, plateau_length: 1.5}
     material: concrete

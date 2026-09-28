@@ -1,7 +1,7 @@
 {
   "generator_version": "0.1.0",
-  "git_commit": "46d2a18",
-  "created_utc": "2026-09-26T18:39:59+00:00",
+  "git_commit": "71232d8",
+  "created_utc": "2026-09-28T03:08:04+00:00",
   "frame": "Isaac Sim world, assumed equal to Nav2 map frame",
   "raster": {
     "file": "terrain_ground_truth.npz",
@@ -23,7 +23,7 @@
       "type": "ramp",
       "material": "concrete",
       "pose": {
-        "x": -6.0,
+        "x": -3.0,
         "y": -7.0,
         "yaw_deg": 90.0
       },
@@ -133,7 +133,7 @@
         "name": "ramp_7deg",
         "type": "ramp",
         "pose": {
-          "x": -6.0,
+          "x": -3.0,
           "y": -7.0,
           "yaw_deg": 90.0
         },
