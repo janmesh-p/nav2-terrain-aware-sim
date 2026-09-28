@@ -131,10 +131,24 @@ class LocalizationEval(Node):
         self.create_subscription(TFMessage, args.gt_topic, self.on_truth, 50)
         self.create_timer(0.05, self.process)
         self.create_timer(5.0, self.status, clock=rclpy.clock.Clock())
+        self.create_timer(30.0, self.autosave, clock=rclpy.clock.Clock())
+        self.partial = pathlib.Path(args.out) / f"partial_{args.label}.csv"
         self.get_logger().info(f"waiting for {args.gt_topic} ...")
 
     def _lookup(self, parent: str, child: str, stamp: Time):
         return self.tf_buffer.lookup_transform(parent, child, stamp)
+
+    def autosave(self):
+        """Write samples so far; a crash then loses at most one interval."""
+        if not self.rows:
+            return
+        self.partial.parent.mkdir(parents=True, exist_ok=True)
+        tmp = self.partial.with_suffix(".tmp")
+        with open(tmp, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=list(self.rows[0].keys()))
+            w.writeheader()
+            w.writerows(self.rows)
+        tmp.replace(self.partial)
 
     def status(self):
         self.get_logger().info(
@@ -625,11 +639,18 @@ def main():
     ap.add_argument("--rate", type=float, default=10.0, help="samples per second")
     ap.add_argument("--delay", type=float, default=0.3, help="seconds to wait for TF")
     ap.add_argument("--out", default=str(REPO / "results" / "localization"))
+    ap.add_argument("--recover", metavar="PARTIAL_CSV",
+                    help="finish a run from its autosaved partial CSV")
     ap.add_argument("--analyze", nargs="+", metavar="SAMPLES_CSV",
                     help="re-run analysis on saved runs; several files are also pooled")
     ap.add_argument("--pooled-out", help="output folder for pooled results")
     args = ap.parse_args()
 
+    if args.recover:
+        rows = _load_csv(args.recover)
+        out = write_outputs(rows, args.label, pathlib.Path(args.out))
+        print(f"recovered {len(rows)} samples: {out}")
+        return
     if args.analyze:
         reanalyze(args.analyze, args.pooled_out)
         return
@@ -638,17 +659,25 @@ def main():
     node = LocalizationEval(args)
     try:
         rclpy.spin(node)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, RuntimeError, Exception) as e:  # noqa: B014
+        # Ctrl+C can land inside a message take and surface as RuntimeError.
+        # Whatever stopped the spin, keep the samples.
+        if not isinstance(e, KeyboardInterrupt):
+            print(f"spin stopped: {type(e).__name__}: {e}")
+    rows, misses = list(node.rows), node.misses
+    partial = node.partial
+    try:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+    except Exception:
         pass
-    rows, misses = node.rows, node.misses
-    node.destroy_node()
-    if rclpy.ok():
-        rclpy.shutdown()
 
     print(f"\n{len(rows)} samples, {misses} skipped for missing TF")
     if rows:
         out = write_outputs(rows, args.label, pathlib.Path(args.out))
         print(f"results: {out}")
+        partial.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
