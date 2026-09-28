@@ -35,7 +35,7 @@ LAYER_PARAMS = {
     "fusion_alpha": 0.3,
     "max_cell_spread": 0.12,
     "max_step": 0.10,
-    "step_radius": 0.2,
+    "step_radius": 0.4,
     "vertical_confirm": 2,
     "imu_topic": "",
     "tilt_gate_deg": 3.0,
@@ -56,7 +56,7 @@ LAYER_PARAMS = {
 # Stock padding (0.25 m) and slow inflation decay (0.3) leave a 2 m ramp
 # with lethal edges nearly lethal across its whole width.
 SHARED_COSTMAP = {"footprint_padding": 0.10}
-SHARED_INFLATION = {"cost_scaling_factor": 3.0, "inflation_radius": 0.8}
+SHARED_INFLATION = {"cost_scaling_factor": 6.0, "inflation_radius": 0.8}
 
 
 # AMCL matches a scan that starts above all terrain (see terrain_nav.launch.py).

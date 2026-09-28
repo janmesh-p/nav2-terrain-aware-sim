@@ -176,7 +176,7 @@ local_costmap:
       inflation_layer:
         plugin: nav2_costmap_2d::InflationLayer
         enabled: true
-        cost_scaling_factor: 3.0
+        cost_scaling_factor: 6.0
         inflation_radius: 0.8
       hesai_voxel_layer:
         plugin: nav2_costmap_2d::VoxelLayer
@@ -234,7 +234,7 @@ local_costmap:
         fusion_alpha: 0.3
         max_cell_spread: 0.12
         max_step: 0.1
-        step_radius: 0.2
+        step_radius: 0.4
         vertical_confirm: 2
         imu_topic: ''
         tilt_gate_deg: 3.0
@@ -289,7 +289,7 @@ global_costmap:
         map_subscribe_transient_local: true
       inflation_layer:
         plugin: nav2_costmap_2d::InflationLayer
-        cost_scaling_factor: 3.0
+        cost_scaling_factor: 6.0
         inflation_radius: 0.8
       always_send_full_costmap: true
       terrain_layer:
@@ -306,7 +306,7 @@ global_costmap:
         fusion_alpha: 0.3
         max_cell_spread: 0.12
         max_step: 0.1
-        step_radius: 0.2
+        step_radius: 0.4
         vertical_confirm: 2
         imu_topic: ''
         tilt_gate_deg: 3.0
