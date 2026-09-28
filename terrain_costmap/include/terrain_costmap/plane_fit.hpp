@@ -21,4 +21,16 @@ void analyzeTerrain(
   int window_radius, double min_valid_fraction,
   std::vector<float> & slope_deg, std::vector<float> & roughness_m);
 
+/// Flag cells that sit on a height step a wheel cannot climb.
+///
+/// A known cell is flagged when any known cell within radius_cells differs
+/// in height by more than max_step metres. This catches a ramp's side from
+/// both the floor and the top, even when the vertical face itself has no
+/// returns, and it catches drop-offs that obstacle layers never see.
+///
+/// heights: row-major, NaN unknown. steps: output, same size, 1 = step.
+void markSteps(
+  const std::vector<float> & heights, int width, int height,
+  int radius_cells, double max_step, std::vector<unsigned char> & steps);
+
 }  // namespace terrain_costmap

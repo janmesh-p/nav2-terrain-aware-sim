@@ -102,4 +102,43 @@ void analyzeTerrain(
   }
 }
 
+void markSteps(
+  const std::vector<float> & heights, int width, int height,
+  int radius_cells, double max_step, std::vector<unsigned char> & steps)
+{
+  const size_t cells = static_cast<size_t>(width) * height;
+  steps.assign(cells, 0);
+  if (heights.size() != cells || radius_cells < 1) {
+    return;
+  }
+  const int r2 = radius_cells * radius_cells;
+  for (int j = 0; j < height; ++j) {
+    for (int i = 0; i < width; ++i) {
+      const float hc = heights[static_cast<size_t>(j) * width + i];
+      if (!std::isfinite(hc)) {
+        continue;
+      }
+      bool step = false;
+      for (int dj = -radius_cells; dj <= radius_cells && !step; ++dj) {
+        const int nj = j + dj;
+        if (nj < 0 || nj >= height) {
+          continue;
+        }
+        for (int di = -radius_cells; di <= radius_cells; ++di) {
+          const int ni = i + di;
+          if ((di == 0 && dj == 0) || ni < 0 || ni >= width || di * di + dj * dj > r2) {
+            continue;
+          }
+          const float hn = heights[static_cast<size_t>(nj) * width + ni];
+          if (std::isfinite(hn) && std::fabs(hn - hc) > max_step) {
+            step = true;
+            break;
+          }
+        }
+      }
+      steps[static_cast<size_t>(j) * width + i] = step ? 1 : 0;
+    }
+  }
+}
+
 }  // namespace terrain_costmap

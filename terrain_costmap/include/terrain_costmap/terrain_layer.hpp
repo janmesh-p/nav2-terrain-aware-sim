@@ -9,6 +9,7 @@
 #include "nav_msgs/msg/occupancy_grid.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
+#include "sensor_msgs/msg/imu.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
 
 namespace terrain_costmap
@@ -42,6 +43,9 @@ public:
 
 private:
   void cloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr msg);
+  void imuCallback(const sensor_msgs::msg::Imu::ConstSharedPtr msg);
+  template<typename T>
+  void shiftGrid(std::vector<T> & grid, int di, int dj, T fill);
   void recenter(double robot_x, double robot_y);
   void recomputeCosts();
   void publishDebug(const rclcpp::Time & stamp);
@@ -62,6 +66,13 @@ private:
   double band_above_{0.4};
   double fusion_alpha_{0.3};
   double max_cell_spread_{0.12};
+  double max_step_{0.10};
+  double step_radius_{0.2};
+  int vertical_confirm_{2};
+  std::string imu_topic_;
+  double tilt_gate_deg_{3.0};
+  double tilt_trust_tol_deg_{1.0};
+  double tilt_hold_s_{0.5};
   int point_stride_{1};
   double window_m_{0.35};
   double min_valid_fraction_{0.5};
@@ -86,6 +97,19 @@ private:
   std::vector<unsigned char> cost_;  // 255 = no estimate
   std::vector<float> scratch_;      // per-scan max z
   std::vector<float> scratch_min_;  // per-scan min z
+  std::vector<unsigned char> vertical_hits_;  // 0..3, vertical face evidence
+  std::vector<unsigned char> steps_;
+
+  // Tilt gating state (guarded by imu_mutex_)
+  std::mutex imu_mutex_;
+  double imu_tilt_deg_{0.0};
+  rclcpp::Time imu_stamp_{0, 0, RCL_ROS_TIME};
+  bool have_imu_{false};
+  rclcpp::Time last_untrusted_{0, 0, RCL_ROS_TIME};
+  size_t gated_clouds_{0};
+  bool tf_planar_reported_{false};
+  bool tf_tilted_reported_{false};
+  rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
 
   std::mutex mutex_;
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_sub_;

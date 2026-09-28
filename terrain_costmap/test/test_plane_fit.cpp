@@ -8,6 +8,7 @@
 #include "terrain_costmap/plane_fit.hpp"
 
 using terrain_costmap::analyzeTerrain;
+using terrain_costmap::markSteps;
 
 namespace
 {
@@ -95,4 +96,52 @@ TEST(PlaneFit, SparseWindowIsRejected)
   std::vector<float> slope, rough;
   analyzeTerrain(z, 5, 5, kRes, 2, 0.5, slope, rough);
   EXPECT_TRUE(std::isnan(slope[12]));
+}
+
+TEST(Steps, RampSideIsFlaggedFromBothSidesAcrossAGap)
+{
+  // Floor at 0, raised block at 0.28 m from column 10, column 9 unknown
+  // (the vertical face that returned no usable height).
+  const int w = 20, h = 10;
+  std::vector<float> z(w * h, 0.0f);
+  for (int j = 0; j < h; ++j) {
+    z[j * w + 9] = std::numeric_limits<float>::quiet_NaN();
+    for (int i = 10; i < w; ++i) {
+      z[j * w + i] = 0.28f;
+    }
+  }
+  std::vector<unsigned char> steps;
+  markSteps(z, w, h, 2, 0.10, steps);
+  for (int j = 0; j < h; ++j) {
+    EXPECT_EQ(steps[j * w + 8], 1) << "floor side";
+    EXPECT_EQ(steps[j * w + 10], 1) << "top side";
+    EXPECT_EQ(steps[j * w + 3], 0) << "open floor";
+    EXPECT_EQ(steps[j * w + 16], 0) << "block top";
+  }
+}
+
+TEST(Steps, SevenDegreeRampIsNotAStep)
+{
+  auto z = plane(40, 40, 7.0, 0.0);
+  std::vector<unsigned char> steps;
+  markSteps(z, 40, 40, 2, 0.10, steps);
+  for (auto s : steps) {
+    ASSERT_EQ(s, 0);
+  }
+}
+
+TEST(Steps, SmallStepBelowThresholdIsIgnored)
+{
+  const int w = 20, h = 5;
+  std::vector<float> z(w * h, 0.0f);
+  for (int j = 0; j < h; ++j) {
+    for (int i = 10; i < w; ++i) {
+      z[j * w + i] = 0.06f;
+    }
+  }
+  std::vector<unsigned char> steps;
+  markSteps(z, w, h, 2, 0.10, steps);
+  for (auto s : steps) {
+    ASSERT_EQ(s, 0);
+  }
 }

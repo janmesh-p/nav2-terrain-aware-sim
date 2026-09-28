@@ -31,6 +31,17 @@ tf2::Transform toTf(const geometry_msgs::msg::Transform & t)
     tf2::Vector3(t.translation.x, t.translation.y, t.translation.z));
 }
 
+// Angle between a frame's z axis and world vertical, degrees.
+double tiltDeg(double qx, double qy, double qz, double qw)
+{
+  const double n = qx * qx + qy * qy + qz * qz + qw * qw;
+  if (n < 1e-9) {
+    return 0.0;
+  }
+  const double c = 1.0 - 2.0 * (qx * qx + qy * qy) / n;
+  return std::acos(std::clamp(c, -1.0, 1.0)) * 180.0 / M_PI;
+}
+
 double ramp01(double v, double lo, double hi)
 {
   if (hi <= lo) {
@@ -71,6 +82,13 @@ void TerrainLayer::onInitialize()
   band_above_ = param<double>("band_above", 0.35);
   fusion_alpha_ = param<double>("fusion_alpha", 0.3);
   max_cell_spread_ = param<double>("max_cell_spread", 0.12);
+  max_step_ = param<double>("max_step", 0.10);
+  step_radius_ = param<double>("step_radius", 0.2);
+  vertical_confirm_ = std::clamp(param<int>("vertical_confirm", 2), 1, 3);
+  imu_topic_ = param<std::string>("imu_topic", "/chassis/imu");
+  tilt_gate_deg_ = param<double>("tilt_gate_deg", 3.0);
+  tilt_trust_tol_deg_ = param<double>("tilt_trust_tol_deg", 1.0);
+  tilt_hold_s_ = param<double>("tilt_hold_s", 0.5);
   point_stride_ = std::max(1, param<int>("point_stride", 1));
   window_m_ = param<double>("window", 0.5);
   min_valid_fraction_ = param<double>("min_valid_fraction", 0.25);
@@ -92,10 +110,18 @@ void TerrainLayer::onInitialize()
   cost_.assign(n, kNoEstimate);
   scratch_.assign(n, kNaN);
   scratch_min_.assign(n, kNaN);
+  vertical_hits_.assign(n, 0);
+  steps_.assign(n, 0);
 
   cloud_sub_ = node->create_subscription<sensor_msgs::msg::PointCloud2>(
     cloud_topic_, rclcpp::SensorDataQoS(),
     std::bind(&TerrainLayer::cloudCallback, this, std::placeholders::_1));
+
+  if (!imu_topic_.empty()) {
+    imu_sub_ = node->create_subscription<sensor_msgs::msg::Imu>(
+      imu_topic_, rclcpp::SensorDataQoS(),
+      std::bind(&TerrainLayer::imuCallback, this, std::placeholders::_1));
+  }
 
   const std::string prefix = "~/" + name_ + "/";
   auto latched = rclcpp::QoS(1).transient_local();
@@ -131,6 +157,8 @@ void TerrainLayer::reset()
   std::fill(slope_deg_.begin(), slope_deg_.end(), kNaN);
   std::fill(roughness_m_.begin(), roughness_m_.end(), kNaN);
   std::fill(cost_.begin(), cost_.end(), kNoEstimate);
+  std::fill(vertical_hits_.begin(), vertical_hits_.end(), 0);
+  std::fill(steps_.begin(), steps_.end(), 0);
   have_origin_ = false;
   current_ = true;
 }
@@ -140,6 +168,48 @@ bool TerrainLayer::worldToCell(double wx, double wy, int & i, int & j) const
   i = static_cast<int>(std::floor((wx - origin_x_) / resolution_));
   j = static_cast<int>(std::floor((wy - origin_y_) / resolution_));
   return i >= 0 && j >= 0 && i < cells_ && j < cells_;
+}
+
+template<typename T>
+void TerrainLayer::shiftGrid(std::vector<T> & grid, int di, int dj, T fill)
+{
+  std::vector<T> shifted(grid.size(), fill);
+  for (int j = 0; j < cells_; ++j) {
+    const int oj = j + dj;
+    if (oj < 0 || oj >= cells_) {
+      continue;
+    }
+    for (int i = 0; i < cells_; ++i) {
+      const int oi = i + di;
+      if (oi >= 0 && oi < cells_) {
+        shifted[static_cast<size_t>(j) * cells_ + i] = grid[static_cast<size_t>(oj) * cells_ + oi];
+      }
+    }
+  }
+  grid.swap(shifted);
+}
+
+void TerrainLayer::imuCallback(const sensor_msgs::msg::Imu::ConstSharedPtr msg)
+{
+  double tilt;
+  const auto & q = msg->orientation;
+  const bool has_orientation = msg->orientation_covariance[0] >= 0.0 &&
+    (q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w) > 0.5;
+  if (has_orientation) {
+    tilt = tiltDeg(q.x, q.y, q.z, q.w);
+  } else {
+    // Fall back to the gravity direction in the accelerometer.
+    const auto & a = msg->linear_acceleration;
+    const double n = std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+    if (n < 1e-3) {
+      return;
+    }
+    tilt = std::acos(std::clamp(a.z / n, -1.0, 1.0)) * 180.0 / M_PI;
+  }
+  std::lock_guard<std::mutex> lock(imu_mutex_);
+  imu_tilt_deg_ = tilt;
+  imu_stamp_ = rclcpp::Time(msg->header.stamp, RCL_ROS_TIME);
+  have_imu_ = true;
 }
 
 void TerrainLayer::recenter(double robot_x, double robot_y)
@@ -157,24 +227,11 @@ void TerrainLayer::recenter(double robot_x, double robot_y)
   if (std::hypot(robot_x - cx, robot_y - cy) < recenter_distance_) {
     return;
   }
-  // Shift stored heights so world-fixed cells keep their values.
   const int di = static_cast<int>(std::lround((new_x - origin_x_) / resolution_));
   const int dj = static_cast<int>(std::lround((new_y - origin_y_) / resolution_));
-  std::vector<float> shifted(height_.size(), kNaN);
-  for (int j = 0; j < cells_; ++j) {
-    const int oj = j + dj;
-    if (oj < 0 || oj >= cells_) {
-      continue;
-    }
-    for (int i = 0; i < cells_; ++i) {
-      const int oi = i + di;
-      if (oi >= 0 && oi < cells_) {
-        shifted[static_cast<size_t>(j) * cells_ + i] =
-          height_[static_cast<size_t>(oj) * cells_ + oi];
-      }
-    }
-  }
-  height_.swap(shifted);
+  // Shift stored state so world-fixed cells keep their values.
+  shiftGrid(height_, di, dj, kNaN);
+  shiftGrid(vertical_hits_, di, dj, static_cast<unsigned char>(0));
   origin_x_ += di * resolution_;
   origin_y_ += dj * resolution_;
 }
@@ -196,6 +253,46 @@ void TerrainLayer::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstShare
   } catch (const tf2::TransformException & e) {
     RCLCPP_WARN_THROTTLE(logger_, *clock_, 2000, "%s: tf failed: %s", name_.c_str(), e.what());
     return;
+  }
+
+  // Tilt gating. If the robot is tilted and TF does not carry that tilt,
+  // projecting this scan would put ground points at wrong heights and paint
+  // phantom slopes and steps. Skip it, and a short while after.
+  {
+    const rclcpp::Time stamp(msg->header.stamp, RCL_ROS_TIME);
+    const tf2::Quaternion qb = base_to_global.getRotation();
+    const double tf_tilt = tiltDeg(qb.x(), qb.y(), qb.z(), qb.w());
+    double imu_tilt = 0.0;
+    bool imu_fresh = false;
+    {
+      std::lock_guard<std::mutex> lock(imu_mutex_);
+      imu_fresh = have_imu_ && std::fabs((stamp - imu_stamp_).seconds()) < 0.5;
+      imu_tilt = imu_tilt_deg_;
+    }
+    if (imu_fresh && imu_tilt > tilt_gate_deg_) {
+      const bool tf_untrusted = std::fabs(imu_tilt - tf_tilt) > tilt_trust_tol_deg_;
+      if (tf_untrusted && !tf_planar_reported_) {
+        RCLCPP_WARN(logger_, "%s: IMU tilt %.1f deg but TF tilt %.1f deg, TF is planar; "
+          "gating tilted scans", name_.c_str(), imu_tilt, tf_tilt);
+        tf_planar_reported_ = true;
+      } else if (!tf_untrusted && !tf_tilted_reported_) {
+        RCLCPP_INFO(logger_, "%s: TF carries body tilt (%.1f deg); no gating needed",
+          name_.c_str(), tf_tilt);
+        tf_tilted_reported_ = true;
+      }
+      if (tf_untrusted) {
+        last_untrusted_ = stamp;
+      }
+    }
+    if (last_untrusted_.nanoseconds() > 0 &&
+      (stamp - last_untrusted_).seconds() >= 0.0 &&
+      (stamp - last_untrusted_).seconds() < tilt_hold_s_)
+    {
+      if (++gated_clouds_ % 50 == 1) {
+        RCLCPP_INFO(logger_, "%s: %zu tilted scans skipped so far", name_.c_str(), gated_clouds_);
+      }
+      return;
+    }
   }
 
   const tf2::Vector3 robot = base_to_global.getOrigin();
@@ -235,13 +332,13 @@ void TerrainLayer::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstShare
       continue;
     }
     const size_t c = static_cast<size_t>(j) * cells_ + i;
-    const float z = static_cast<float>(p.z());
+    const float pz = static_cast<float>(p.z());
     // Highest return in a cell approximates the surface a wheel meets.
-    if (std::isnan(scratch_[c]) || z > scratch_[c]) {
-      scratch_[c] = z;
+    if (std::isnan(scratch_[c]) || pz > scratch_[c]) {
+      scratch_[c] = pz;
     }
-    if (std::isnan(scratch_min_[c]) || z < scratch_min_[c]) {
-      scratch_min_[c] = z;
+    if (std::isnan(scratch_min_[c]) || pz < scratch_min_[c]) {
+      scratch_min_[c] = pz;
     }
   }
 
@@ -251,12 +348,19 @@ void TerrainLayer::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstShare
       continue;
     }
     // A tall spread of returns inside one cell is a vertical face (wall,
-    // shelf leg, pallet side), not drivable terrain. Obstacle layers own
-    // those; letting them in here would read as a false steep slope.
+    // pallet side, ramp edge), not a surface to fit a plane through.
     if (scratch_[c] - scratch_min_[c] > max_cell_spread_) {
+      // Keep it out of the plane fit, but remember it: repeated evidence
+      // of a vertical face marks the cell lethal in recomputeCosts().
       height_[c] = kNaN;
+      if (vertical_hits_[c] < 3) {
+        ++vertical_hits_[c];
+      }
       ++rejected;
       continue;
+    }
+    if (vertical_hits_[c] > 0) {
+      --vertical_hits_[c];  // flat observation weakens earlier evidence
     }
     float & h = height_[c];
     h = std::isnan(h) ? scratch_[c] :
@@ -278,7 +382,14 @@ void TerrainLayer::recomputeCosts()
     height_, cells_, cells_, resolution_, radius, min_valid_fraction_,
     slope_deg_, roughness_m_);
 
+  const int step_cells = std::max(1, static_cast<int>(std::round(step_radius_ / resolution_)));
+  markSteps(height_, cells_, cells_, step_cells, max_step_, steps_);
+
   for (size_t c = 0; c < cost_.size(); ++c) {
+    if (steps_[c] || vertical_hits_[c] >= vertical_confirm_) {
+      cost_[c] = nav2_costmap_2d::LETHAL_OBSTACLE;
+      continue;
+    }
     const float s = slope_deg_[c], r = roughness_m_[c];
     if (!std::isfinite(s) || !std::isfinite(r)) {
       cost_[c] = kNoEstimate;
