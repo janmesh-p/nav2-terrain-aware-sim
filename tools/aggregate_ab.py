@@ -87,7 +87,7 @@ def summarize_condition(labels: list, routes: dict, loc: dict) -> dict:
     legs = [l["name"] for l in routes[labels[0]]["legs"]]
     leg_ok = {name: [] for name in legs}
     leg_time = {name: [] for name in legs}
-    full, recov = [], []
+    full, recov, false_ok, route_time = [], [], [], []
     for lab in labels:
         run_legs = {l["name"]: l for l in routes[lab]["legs"]}
         ok_all = True
@@ -100,6 +100,8 @@ def summarize_condition(labels: list, routes: dict, loc: dict) -> dict:
                 leg_time[name].append(l["sim_seconds"])
         full.append(ok_all)
         recov.append(sum((l.get("recoveries") or 0) for l in routes[lab]["legs"]))
+        false_ok.append(sum(1 for l in routes[lab]["legs"] if l["result"] == "false_success"))
+        route_time.append(sum(l["sim_seconds"] for l in routes[lab]["legs"]))
 
     locm = {lab: localization_metrics(loc[lab]) for lab in labels if lab in loc}
     episodes, controls = [], []
@@ -122,6 +124,8 @@ def summarize_condition(labels: list, routes: dict, loc: dict) -> dict:
         "leg_success": {k: [int(sum(v)), len(v)] for k, v in leg_ok.items()},
         "leg_median_time_s": {k: (float(np.median(v)) if v else None) for k, v in leg_time.items()},
         "recoveries_median": float(np.median(recov)),
+        "false_successes_total": int(sum(false_ok)),
+        "route_sim_seconds_median": float(np.median(route_time)),
         "localized_runs": len(locm),
         "amcl_median_cm": med("amcl_median_cm"),
         "amcl_p95_cm": med("amcl_p95_cm"),
@@ -151,6 +155,10 @@ def to_markdown(res: dict) -> str:
             "{}/{}".format(*res[c]["leg_success"][leg]) for c in conds) + " |")
     L.append("| median recoveries per run | " + " | ".join(
         fmt(res[c]["recoveries_median"], "{:.0f}") for c in conds) + " |")
+    L.append("| Nav2 false successes (total) | " + " | ".join(
+        str(res[c]["false_successes_total"]) for c in conds) + " |")
+    L.append("| median route time (sim s) | " + " | ".join(
+        fmt(res[c]["route_sim_seconds_median"], "{:.0f}") for c in conds) + " |")
 
     L += ["", "## Localization (median across runs)", "",
           "| metric | " + " | ".join(conds) + " |", "|---|" + "---|" * len(conds)]
@@ -232,6 +240,8 @@ def main():
     ap.add_argument("--routes", default=str(REPO / "results" / "routes"))
     ap.add_argument("--localization", default=str(REPO / "results" / "localization"))
     ap.add_argument("--exclude", nargs="*", default=DEFAULT_EXCLUDE)
+    ap.add_argument("--conditions", nargs="*",
+                    help="only these condition prefixes, e.g. v3d_baseline v3d_terrain")
     ap.add_argument("--out", default=str(REPO / "docs" / "results" / "ab"))
     args = ap.parse_args()
 
@@ -239,8 +249,13 @@ def main():
     loc = load_localization(pathlib.Path(args.localization), set(routes))
     by_cond = {}
     for lab in sorted(routes):
-        by_cond.setdefault(condition_of(lab), []).append(lab)
-    order = sorted(by_cond, key=lambda c: (c != "baseline", c))
+        cond = condition_of(lab)
+        if args.conditions and cond not in args.conditions:
+            continue
+        by_cond.setdefault(cond, []).append(lab)
+    if not by_cond:
+        sys.exit("no runs match; check --conditions")
+    order = sorted(by_cond, key=lambda c: ("baseline" not in c, c))
     res = {c: summarize_condition(by_cond[c], routes, loc) for c in order}
 
     out = pathlib.Path(args.out)

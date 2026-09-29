@@ -1,0 +1,24 @@
+region             n  amcl mean  amcl p95  amcl max  yaw p95  odom mean  tilt p95
+---------------------------------------------------------------------------------
+all             1444     15.5cm    37.4cm    41.2cm    5.1d      0.4cm      7.1d
+bump_field       100     17.6cm    28.2cm    28.7cm    5.1d      0.4cm      6.0d
+floor           1151     15.2cm    37.4cm    39.7cm    5.0d      0.4cm      0.1d
+ramp_7deg        193     16.6cm    38.0cm    41.2cm    5.5d      0.3cm      7.1d
+
+tilt band        n   time  amcl mean
+------------------------------------
+0-1 deg       1172    81%     15.2cm
+1-3 deg         40     3%     20.9cm
+>3 deg         232    16%     16.1cm
+correlation tilt vs error level +0.02
+
+episode at     dur  peak tilt         region   before    change
+---------------------------------------------------------------
+    40.4 s   4.5s      6.4d     bump_field   17.9cm   +10.1cm
+    59.0 s   3.7s      6.2d     bump_field   13.9cm   +13.4cm
+   128.9 s  15.0s      7.1d      ramp_7deg   37.4cm   -18.9cm
+   145.6 s   3.4s      7.1d      ramp_7deg   18.5cm   -15.4cm
+
+tilt episodes  n=4    median change   -2.7 cm (mean -2.7), worse in 50%
+flat control   n=80   median change   +2.1 cm (mean +4.4), worse in 68%
+median difference -4.8 cm, 95% CI [-21.8, +11.6], one-sided permutation p = 0.876

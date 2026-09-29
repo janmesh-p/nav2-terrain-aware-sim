@@ -1,0 +1,109 @@
+{
+  "route": "terrain_tour_v3",
+  "label": "v3d_baseline_run1",
+  "truth_tolerance_m": 0.5,
+  "legs": [
+    {
+      "name": "bump_entry",
+      "goal": [
+        -5.47,
+        -0.08
+      ],
+      "result": "succeeded",
+      "nav2_result": "succeeded",
+      "truth_final": [
+        -5.558,
+        -0.195
+      ],
+      "truth_distance_m": 0.145,
+      "truth_yaw_error_deg": 19.1,
+      "sim_seconds": 6.18,
+      "recoveries": 0
+    },
+    {
+      "name": "bump_exit",
+      "goal": [
+        -5.47,
+        4.12
+      ],
+      "result": "succeeded",
+      "nav2_result": "succeeded",
+      "truth_final": [
+        -5.321,
+        4.319
+      ],
+      "truth_distance_m": 0.249,
+      "truth_yaw_error_deg": 13.7,
+      "sim_seconds": 11.78,
+      "recoveries": 0
+    },
+    {
+      "name": "rough_entry",
+      "goal": [
+        -6.07,
+        -6.48
+      ],
+      "result": "succeeded",
+      "nav2_result": "succeeded",
+      "truth_final": [
+        -5.862,
+        -6.633
+      ],
+      "truth_distance_m": 0.258,
+      "truth_yaw_error_deg": 12.5,
+      "sim_seconds": 72.55,
+      "recoveries": 4
+    },
+    {
+      "name": "rough_exit",
+      "goal": [
+        -0.87,
+        -6.48
+      ],
+      "result": "succeeded",
+      "nav2_result": "succeeded",
+      "truth_final": [
+        -0.997,
+        -6.411
+      ],
+      "truth_distance_m": 0.145,
+      "truth_yaw_error_deg": 12.0,
+      "sim_seconds": 25.38,
+      "recoveries": 1
+    },
+    {
+      "name": "ramp_entry",
+      "goal": [
+        3.03,
+        8.42
+      ],
+      "result": "succeeded",
+      "nav2_result": "succeeded",
+      "truth_final": [
+        3.041,
+        8.323
+      ],
+      "truth_distance_m": 0.098,
+      "truth_yaw_error_deg": 18.5,
+      "sim_seconds": 22.28,
+      "recoveries": 0
+    },
+    {
+      "name": "ramp_exit",
+      "goal": [
+        3.03,
+        15.62
+      ],
+      "result": "timeout",
+      "nav2_result": "timeout",
+      "truth_final": [
+        4.167,
+        13.988
+      ],
+      "truth_distance_m": 1.989,
+      "truth_yaw_error_deg": 90.7,
+      "sim_seconds": 180.02,
+      "recoveries": 15
+    }
+  ]
+}

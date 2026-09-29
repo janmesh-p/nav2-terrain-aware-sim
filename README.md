@@ -1,1 +1,165 @@
 # nav2-terrain-aware-sim
+
+Terrain-aware navigation for a wheeled robot in NVIDIA Isaac Sim 5.0 with ROS 2 Jazzy and Nav2.
+
+Stock Nav2 sees the world as floor or wall. Anything below its obstacle height filter (about 10 to 20 cm here) counts as floor, so ramps, bumps and rough ground are invisible to it. This project adds a costmap layer that measures slope, roughness and height steps from 3D lidar, and a ground-truth evaluation pipeline that scores navigation, localization and the layer's own perception against the simulator's true state.
+
+| Stock Nav2 | With terrain layer |
+|---|---|
+| [baseline_final_4x.mp4](media/baseline_final_4x.mp4) | [terrain_final_4x.mp4](media/terrain_final_4x.mp4) |
+
+Both videos run at 4x speed on the same route.
+
+## What I built
+
+- **Terrain generator** (`scenes/terrain_gen/`). Builds test terrain into the Isaac Sim warehouse: a 7 degree ramp, a Gaussian bump field, and a rough patch synthesized to the ISO 8608 road roughness spectrum (class F). Writes PhysX colliders, friction materials, and a ground-truth raster of height, slope and roughness in the map frame. Unit tested.
+- **Layout search** (`tools/plan_layout.py`). Places patches automatically: clear of the Nav2 map and of real scene objects exported from Isaac Sim, at least 5 m apart edge to edge, with room for entry and exit goals. Generates the matching route.
+- **Terrain costmap layer** (`terrain_costmap/`, C++ Nav2 plugin). Fuses lidar returns into a rolling elevation grid, fits a least-squares plane in a 0.5 m window per cell (slope and residual roughness in one pass, O(n) via integral images), marks height steps and vertical faces lethal, and writes a graded cost. Unit tested with gtest.
+- **Localization scan** (`bringup/launch/terrain_nav.launch.py`). A second laser scan for AMCL that starts 35 cm above the floor, above all terrain.
+- **Evaluation** (`tools/`). Ground-truth pose publisher in Isaac Sim, a route runner that judges each goal by the true pose (not Nav2's belief), a route validator, a localization evaluator, a layer accuracy scorer, and an A/B aggregator.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph SIM[Isaac Sim 5.0]
+    W[Warehouse + generated terrain] --> R[Nova Carter]
+    R --> L[3D lidar]
+    R --> O[Odometry + TF]
+    GT[Ground-truth pose graph]
+  end
+
+  L --> TL[Terrain layer: elevation grid, plane fit, steps]
+  L --> OS[Obstacle scan, from 12.6 cm]
+  L --> LS[Localization scan, from 35 cm]
+  LS --> AMCL
+  O --> AMCL
+
+  subgraph NAV[Nav2]
+    SM[Static map] --> CM[Costmaps]
+    OS --> CM
+    TL --> CM
+    CM --> INF[Inflation] --> P[NavFn planner] --> C[DWB controller]
+  end
+  AMCL --> NAV
+  C -->|cmd_vel| R
+
+  GT --> EV[Evaluation: route judge, localization error, layer accuracy]
+  AMCL --> EV
+  TL --> EV
+```
+
+## Results
+
+Final configuration, 3 runs per condition, same scene, same validated route, same Nav2 settings except the terrain layer. Every goal is judged against the true robot pose with a 0.5 m tolerance.
+
+### Navigation
+
+| | Stock Nav2 | Terrain layer |
+|---|---|---|
+| Full route completed | **2/3** | 1/3 |
+| Median recoveries per run | 20 | **3** |
+| Median route time (sim s) | 318 | **113** |
+| Tilt p95 | 14.0 deg | **7.1 deg** |
+| Time on the rough patch | 41.6 s | **24.5 s** |
+| Nav2 reported success, robot was not there | 0 | 2 |
+
+Stock Nav2 completes slightly more routes, by driving straight over every patch and grinding through recoveries. The terrain layer routes around hazards, finishes about 3x faster with far fewer recoveries, and halves body tilt. Its two misses were near-misses at the bump field exit (0.52 m and 0.54 m against a 0.5 m tolerance). The ramp's far end was reached in 2 of 3 runs in both conditions.
+
+### Localization
+
+| | Stock Nav2 | Terrain layer |
+|---|---|---|
+| AMCL error, median | 15.1 cm | 14.7 cm |
+| AMCL error, p95 | 52.9 cm | **37.4 cm** |
+| AMCL error on the rough patch | 24.9 cm | **10.1 cm** |
+| Runs with error above 2 m | 0/3 | 0/3 |
+
+### Terrain layer accuracy against ground truth
+
+Scored in the map frame through odometry anchored to the true start pose, so localization error is excluded. Ground truth is recomputed with the layer's own 0.5 m window.
+
+| Region | True slope | Estimated slope | True roughness | Estimated roughness |
+|---|---|---|---|---|
+| Ramp incline | 7.0 deg | 6.8 deg (all 3 runs) | 0 mm | under 5 mm |
+| Rough patch | 5.6 deg | 3.8 to 4.5 deg | 12.7 mm | 10.8 to 11.5 mm |
+| Bump field | 3.4 deg | 2.5 to 3.2 deg | 5.6 mm | 6.0 to 7.0 mm |
+| Flat floor | 0.0 deg | 0.0 to 0.2 deg median | 0 mm | 0.2 to 1.5 mm |
+
+The floor rows include pallets, forklifts and shelving that the ground truth does not model, so the floor "lethal" share (12 to 15%) overstates false positives.
+
+## What went wrong, and what it taught me
+
+Most of the value came from failures that ground truth made visible.
+
+1. **A goal 10 cm from a forklift.** In the first layout, the planner kept reporting "no valid path" near the ramp. The accuracy map showed the layer was right: the goal sat next to a forklift and pallets. Fix: a route validator that checks every goal against the Nav2 map, real scene objects exported from Isaac Sim, and terrain patches, and a layout search that places patches with 5 m spacing.
+2. **Nav2 said "succeeded" 5 m from the goal.** Nav2 judges arrival by AMCL's estimate. A lost robot reports success. Fix: the route runner judges every leg by the true pose and logs false successes separately.
+3. **Localization failures were not caused by tilt.** Early data showed AMCL error rising on terrain, and tilt looked like the cause (effect +8.9 cm, p < 0.001 across runs). The real cause: AMCL's scan started 12.6 cm above the floor and contained the ramp and rough patch, which are not in the map. A separate scan from 35 cm cut maximum error from 6.7 m to under 1 m, and the tilt effect disappeared (+0.1 cm).
+4. **The layer deleted the ramp's edges.** To avoid fake slopes at wall bases, the first version dropped cells with a tall spread of returns. A ramp's side face is exactly such a cell, so the robot drove into edges it could not see. Fix: vertical faces and height steps above 10 cm within 0.4 m are lethal.
+5. **Stock inflation made a safe ramp look lethal.** With 25 cm footprint padding and slow inflation decay, a 2 m ramp with lethal edges cost almost as much as a wall, so the planner rerouted mid-ramp. Fix: tighter padding and faster decay, applied to both conditions.
+6. **A library default teleported the localizer.** Nav2's Python commander publishes a default (0, 0) initial pose if AMCL has not reported yet. The ground-truth log caught it on the first affected run.
+7. **One layer version never compiled.** A redeclared variable broke the build silently, so an early batch of runs used the previous layer. Runs reported here use a build verified by checking the installed library.
+
+## Limitations
+
+- Three runs per condition. The direction of each effect is consistent, the sizes are not yet precise.
+- Crossing the ramp is unreliable in both conditions. The edges are handled, but the controller still clips them on some approaches.
+- Isaac Sim's odometry comes from the physics body, so wheel slip is not modeled. Odometry drift on terrain is untested here.
+- One robot, one warehouse, three patch types.
+
+## Next steps
+
+- Footprint-aware traversal check on steps, instead of per-cell step flags.
+- Wheel-level odometry with slip, to test drift on rough ground.
+- More runs and more terrain classes to tighten the estimates.
+
+## Repository layout
+
+```
+scenes/          terrain generator, configs, ground truth, Isaac Sim scripts
+terrain_costmap/ Nav2 costmap layer (C++), gtests
+bringup/         launch file, params generator, generated params, route
+tools/           route runner, validator, layout search, evaluators, A/B aggregator
+patches/         Nav2 1.3.13 compatibility fixes for the Isaac Sim 5.0 Carter sample
+docs/results/    archived results per layout version
+media/           demo videos
+```
+
+## Reproduce
+
+Tested on Ubuntu 24.04, RTX 5090, Isaac Sim 5.0 (pip install via Isaac Lab 2.3), ROS 2 Jazzy, Nav2 1.3.13.
+
+```bash
+# NVIDIA ROS workspace, with the Nav2 1.3.13 fixes
+git clone -b IsaacSim-5.0.0 https://github.com/isaac-sim/IsaacSim-ros_workspaces.git ~/IsaacSim-ros_workspaces
+cd ~/IsaacSim-ros_workspaces && git apply ~/nav2-terrain-aware-sim/patches/nav2_jazzy_fixes.patch
+ln -s ~/nav2-terrain-aware-sim/terrain_costmap jazzy_ws/src/terrain_costmap
+cd jazzy_ws && source /opt/ros/jazzy/setup.bash
+colcon build --symlink-install --packages-skip isaac_moveit
+colcon test --packages-select terrain_costmap
+
+# Params and terrain
+cd ~/nav2-terrain-aware-sim
+python3 bringup/make_params.py
+python3 tools/plan_layout.py --anchor ramp_7deg ne --clearance 1.5 --patch-clearance ramp_7deg 2.0 --write
+python3 tools/validate_route.py
+```
+
+In Isaac Sim, open `scenes/warehouse_terrain.usd` and run `scenes/run_in_editor.py` and `scenes/add_ground_truth_pose.py` in the Script Editor, then press Play.
+
+```bash
+# Navigation (use nav2_baseline.yaml for the stock comparison)
+ros2 launch bringup/launch/terrain_nav.launch.py params_file:=$PWD/bringup/params/nav2_terrain.yaml
+
+# Evaluation, each in its own terminal
+python3 tools/localization_eval.py --label run1
+python3 tools/layer_accuracy.py --label run1
+python3 tools/run_route.py --label run1
+
+# A/B tables and figure
+python3 tools/aggregate_ab.py --conditions v3d_baseline v3d_terrain --exclude --out docs/results/ab_v3d
+```
+
+## Credits
+
+Built on NVIDIA [IsaacSim-ros_workspaces](https://github.com/isaac-sim/IsaacSim-ros_workspaces) (Apache 2.0), [Nav2](https://github.com/ros-navigation/navigation2), and ROS 2 Jazzy. The warehouse scene and Nova Carter robot are NVIDIA sample assets.

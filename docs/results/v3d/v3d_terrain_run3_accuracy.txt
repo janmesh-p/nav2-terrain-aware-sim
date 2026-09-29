@@ -1,0 +1,8 @@
+region          cells  gt slope  est slope    MAE   bias  gt rough  est rough  cost>0  lethal
+---------------------------------------------------------------------------------------------
+floor           43026     0.0d      0.2d   2.2d  +2.2d     0.0mm      1.0mm     30%     15%
+bump_field        900     3.4d      3.2d   1.2d  -0.3d     5.6mm      7.0mm     69%      0%
+ramp_7deg         823     7.0d      6.0d   3.2d  -2.6d     0.0mm      5.0mm     51%     13%
+rough_iso_f      1163     5.6d      4.2d   2.5d  -1.5d    12.7mm     10.8mm    100%      9%
+
+ramp_7deg: incline reads 6.8 deg (truth 7.0 deg), lethal on incline 2%, lethal on side band 40%
