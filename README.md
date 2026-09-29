@@ -2,13 +2,13 @@
 
 Terrain-aware navigation for a wheeled robot in NVIDIA Isaac Sim 5.0 with ROS 2 Jazzy and Nav2.
 
-Stock Nav2 sees the world as floor or wall. Anything below its obstacle height filter (about 10 to 20 cm here) counts as floor, so ramps, bumps and rough ground are invisible to it. This project adds a costmap layer that measures slope, roughness and height steps from 3D lidar, and a ground-truth evaluation pipeline that scores navigation, localization and the layer's own perception against the simulator's true state.
+Stock Nav2 sees the world as floor or wall. Anything below its obstacle height filter (about 10 to 20 cm here) counts as floor, so ramps, bumps and rough ground are invisible to it. This project adds a costmap layer that measures slope, roughness and height steps from 3D lidar, a ground-truth evaluation pipeline that scores navigation, localization and the layer's own perception against the simulator's true state, and a command arbiter that decides who drives the robot and when it must stop.
 
-| Stock Nav2 | With terrain layer |
-|---|---|
-| [baseline_final_4x.mp4](media/baseline_final_4x.mp4) | [terrain_final_4x.mp4](media/terrain_final_4x.mp4) |
+| Stock Nav2 | With terrain layer | Safety arbiter |
+|---|---|---|
+| [baseline_final_4x.mp4](media/baseline_final_4x.mp4) | [terrain_final_4x.mp4](media/terrain_final_4x.mp4) | [arbiter_demo.mp4](media/arbiter_demo.mp4) |
 
-Both videos run at 4x speed on the same route.
+The navigation videos run at 4x speed on the same route. The arbiter video runs at real time, since stop timing is the point.
 
 ## What I built
 
@@ -16,6 +16,7 @@ Both videos run at 4x speed on the same route.
 - **Layout search** (`tools/plan_layout.py`). Places patches automatically: clear of the Nav2 map and of real scene objects exported from Isaac Sim, at least 5 m apart edge to edge, with room for entry and exit goals. Generates the matching route.
 - **Terrain costmap layer** (`terrain_costmap/`, C++ Nav2 plugin). Fuses lidar returns into a rolling elevation grid, fits a least-squares plane in a 0.5 m window per cell (slope and residual roughness in one pass, O(n) via integral images), marks height steps and vertical faces lethal, and writes a graded cost. Unit tested with gtest.
 - **Localization scan** (`bringup/launch/terrain_nav.launch.py`). A second laser scan for AMCL that starts 35 cm above the floor, above all terrain.
+- **Safety arbiter** (`safety/`). Chooses between autonomy, a remote operator and a safe stop, publishes one velocity command at a fixed 20 Hz, latches the e-stop, and logs every control decision. Policy is pure Python with unit tests.
 - **Evaluation** (`tools/`). Ground-truth pose publisher in Isaac Sim, a route runner that judges each goal by the true pose (not Nav2's belief), a route validator, a localization evaluator, a layer accuracy scorer, and an A/B aggregator.
 
 ## Architecture
@@ -48,6 +49,52 @@ flowchart LR
   AMCL --> EV
   TL --> EV
 ```
+
+## Safety arbiter
+
+Nav2 is one possible source of motion commands. On a real vehicle there are others: a driver, a remote operator, and the decision to stop. The arbiter sits between all of them and the robot.
+
+```mermaid
+flowchart LR
+  NAV[Nav2 /cmd_vel_nav] --> ARB
+  TEL[Operator /cmd_vel_teleop] --> ARB
+  REQ[Mode request, e-stop, reset] --> ARB
+  ODO[Odometry] --> ARB
+  IMU[IMU tilt] --> ARB
+  AMCL[AMCL covariance] --> ARB
+  ARB[Arbiter, 20 Hz] -->|/cmd_vel| ROBOT[Robot]
+  ARB --> LOG[Event log: source, reason, time to standstill]
+```
+
+**Priority, highest first:** latched e-stop, safety faults (stale odometry, tilt over limit), operator teleop, autonomy, stop.
+
+**Decisions it makes on its own:**
+- Autonomy drives only while its commands are fresh and localization reports an uncertainty under the limit.
+- Fresh operator input during autonomy is a takeover, immediately.
+- A lost operator link stops the vehicle. Control never falls back to autonomy without an explicit request.
+- The e-stop latches. A reset leaves the vehicle stopped until someone asks for a mode again.
+- Stops ramp down at a fixed deceleration, then hold zero. The command stream never goes silent.
+
+### Demo result
+
+From the recorded run ([report](docs/results/arbiter/demo1_report.txt), [raw events](docs/results/arbiter/demo1_events.jsonl)):
+
+| Event | Arbiter response |
+|---|---|
+| Nav2 goal sent, no mode granted | Held at stop |
+| Autonomy requested before AMCL had reported a pose | Refused: localization unknown |
+| Operator input | Takeover, same cycle |
+| Operator link dropped | Stop, standstill in 0.15 s, autonomy not resumed |
+| E-stop while turning at 1.1 rad/s | Standstill in 0.55 s, matching the 2 rad/s² ramp |
+| Reset | Stayed stopped |
+| Autonomy requested again | Resumed |
+
+The refusal was not scripted. Autonomy asked for control before localization existed, so the arbiter left the robot to the operator until AMCL reported.
+
+### Limits
+
+- Timeouts use simulation time. On a real vehicle they would run on a monotonic clock, with the watchdog outside the process it guards.
+- Tested against scripted teleop streams, not a real link with latency and loss.
 
 ## Results
 
@@ -120,6 +167,7 @@ scenes/          terrain generator, configs, ground truth, Isaac Sim scripts
 terrain_costmap/ Nav2 costmap layer (C++), gtests
 bringup/         launch file, params generator, generated params, route
 tools/           route runner, validator, layout search, evaluators, A/B aggregator
+safety/          command arbiter, policy core and tests, event report
 patches/         Nav2 1.3.13 compatibility fixes for the Isaac Sim 5.0 Carter sample
 docs/results/    archived results per layout version
 media/           demo videos
@@ -155,6 +203,14 @@ ros2 launch bringup/launch/terrain_nav.launch.py params_file:=$PWD/bringup/param
 python3 tools/localization_eval.py --label run1
 python3 tools/layer_accuracy.py --label run1
 python3 tools/run_route.py --label run1
+
+# Safety arbiter: Nav2 publishes /cmd_vel_nav, the arbiter owns /cmd_vel
+python3 bringup/make_params.py --arbiter
+python3 -m pytest safety/tests -q
+ros2 launch bringup/launch/terrain_nav.launch.py params_file:=$PWD/bringup/params/nav2_terrain_arbiter.yaml
+python3 safety/cmd_arbiter.py --label demo1
+ros2 topic pub --once /arbiter/request_mode std_msgs/String "data: autonomy"
+python3 safety/arbiter_report.py results/arbiter/<file>.jsonl
 
 # A/B tables and figure
 python3 tools/aggregate_ab.py --conditions v3d_baseline v3d_terrain --exclude --out docs/results/ab_v3d
