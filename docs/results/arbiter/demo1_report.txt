@@ -1,0 +1,34 @@
+   t [s]  event
+------------------------------------------------------------
+    0.00  decision   {'source': 'stop', 'reason': 'odometry stale', 'linear': 0.0, 'angular': 0.0}
+    0.08  decision   {'source': 'stop', 'reason': 'stop requested', 'linear': 0.0, 'angular': 0.0}
+   60.40  request    {'mode': 'autonomy'}
+   60.43  decision   {'source': 'stop', 'reason': 'localization uncertain (unknown)', 'linear': 0.0, 'angular': 0.0}
+   65.07  takeover   
+   65.08  decision   {'source': 'teleop', 'reason': 'operator takeover', 'linear': 0.2, 'angular': 0.0}
+   80.73  decision   {'source': 'stop', 'reason': 'teleop link lost', 'linear': 0.15, 'angular': 0.0}
+   80.88  standstill {'after_s': 0.15}
+   84.20  request    {'mode': 'autonomy'}
+   84.23  decision   {'source': 'autonomy', 'reason': 'autonomy', 'linear': -0.0, 'angular': 0.0}
+   88.35  estop      
+   88.38  decision   {'source': 'stop', 'reason': 'e-stop latched', 'linear': 0.0, 'angular': -1.1}
+   88.93  standstill {'after_s': 0.55}
+   91.48  reset      
+   91.53  decision   {'source': 'stop', 'reason': 'stop requested', 'linear': 0.0, 'angular': -0.0}
+   94.78  request    {'mode': 'autonomy'}
+   94.83  decision   {'source': 'autonomy', 'reason': 'autonomy', 'linear': 0.0, 'angular': 1.0}
+
+control time by source:
+  stop         75.0 s  (79.1%)
+  teleop       15.7 s  (16.5%)
+  autonomy      4.2 s  ( 4.4%)
+
+stops by reason:
+    2  stop requested
+    1  odometry stale
+    1  localization uncertain (unknown)
+    1  teleop link lost
+    1  e-stop latched
+
+time to standstill: max 0.55 s, mean 0.35 s over 2 stops
+operator takeovers: 1

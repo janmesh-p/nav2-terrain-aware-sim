@@ -1,0 +1,17 @@
+{"t": 9.517, "event": "decision", "source": "stop", "reason": "odometry stale", "linear": 0.0, "angular": 0.0}
+{"t": 9.6, "event": "decision", "source": "stop", "reason": "stop requested", "linear": 0.0, "angular": 0.0}
+{"t": 69.917, "event": "request", "mode": "autonomy"}
+{"t": 69.95, "event": "decision", "source": "stop", "reason": "localization uncertain (unknown)", "linear": 0.0, "angular": 0.0}
+{"t": 74.583, "event": "takeover"}
+{"t": 74.6, "event": "decision", "source": "teleop", "reason": "operator takeover", "linear": 0.2, "angular": 0.0}
+{"t": 90.25, "event": "decision", "source": "stop", "reason": "teleop link lost", "linear": 0.15, "angular": 0.0}
+{"t": 90.4, "event": "standstill", "after_s": 0.15}
+{"t": 93.717, "event": "request", "mode": "autonomy"}
+{"t": 93.75, "event": "decision", "source": "autonomy", "reason": "autonomy", "linear": -0.0, "angular": 0.0}
+{"t": 97.867, "event": "estop"}
+{"t": 97.9, "event": "decision", "source": "stop", "reason": "e-stop latched", "linear": 0.0, "angular": -1.1}
+{"t": 98.45, "event": "standstill", "after_s": 0.55}
+{"t": 101.0, "event": "reset"}
+{"t": 101.05, "event": "decision", "source": "stop", "reason": "stop requested", "linear": 0.0, "angular": -0.0}
+{"t": 104.3, "event": "request", "mode": "autonomy"}
+{"t": 104.35, "event": "decision", "source": "autonomy", "reason": "autonomy", "linear": 0.0, "angular": 1.0}
