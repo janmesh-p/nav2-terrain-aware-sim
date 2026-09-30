@@ -67,6 +67,7 @@ class Arbiter:
     estop_latched: bool = False
     tilt_deg: float = 0.0
     localization_std_m: float | None = None
+    vehicle_fault_reason: str | None = None
     odom_stamp: float | None = None
     _autonomy: _Stream = field(default_factory=_Stream)
     _teleop: _Stream = field(default_factory=_Stream)
@@ -99,6 +100,13 @@ class Arbiter:
     def odometry(self, now: float) -> None:
         self.odom_stamp = now
 
+    def vehicle_fault(self, reason: str | None) -> None:
+        """Fault reported by the vehicle (ECU). Drops any granted mode, so
+        driving again after it clears needs an explicit request."""
+        if reason and not self.vehicle_fault_reason:
+            self.requested = Mode.STOP
+        self.vehicle_fault_reason = reason or None
+
     def tilt(self, deg: float) -> None:
         self.tilt_deg = deg
 
@@ -112,6 +120,8 @@ class Arbiter:
             return "stop", "e-stop latched", 0.0, 0.0
         if self.odom_stamp is None or not (0.0 <= now - self.odom_stamp <= L.odom_timeout_s):
             return "stop", "odometry stale", 0.0, 0.0
+        if self.vehicle_fault_reason:
+            return "stop", f"vehicle: {self.vehicle_fault_reason}", 0.0, 0.0
         if self.tilt_deg > L.max_tilt_deg:
             return "stop", f"tilt {self.tilt_deg:.1f} deg over {L.max_tilt_deg:.0f}", 0.0, 0.0
 

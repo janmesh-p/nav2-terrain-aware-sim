@@ -10,8 +10,9 @@ Inputs
   /chassis/odom             nav_msgs/Odometry     liveness of the drive feedback
   /chassis/imu              sensor_msgs/Imu       body tilt
   /amcl_pose                PoseWithCovarianceStamped   localization confidence
+  /vehicle/fault            std_msgs/String       ECU fault reason from the CAN bridge
 Outputs
-  /cmd_vel                  geometry_msgs/Twist   published every cycle, 20 Hz
+  --out-topic               geometry_msgs/Twist   /cmd_vel direct, /cmd_vel_arbiter via CAN
   /arbiter/state            std_msgs/String       JSON: source, reason, command
   results/arbiter/<time>_<label>.jsonl   every decision change and standstill
 
@@ -26,6 +27,7 @@ import pathlib
 import sys
 
 import rclpy
+from rclpy.signals import SignalHandlerOptions
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist
 from nav_msgs.msg import Odometry
 from rclpy.node import Node
@@ -61,7 +63,7 @@ class ArbiterNode(Node):
         self.core = Arbiter(limits=Limits(
             max_tilt_deg=args.max_tilt, max_localization_std_m=args.max_loc_std,
             teleop_timeout_s=args.teleop_timeout, max_linear=args.max_linear))
-        self.pub = self.create_publisher(Twist, "/cmd_vel", 10)
+        self.pub = self.create_publisher(Twist, args.out_topic, 10)
         self.state_pub = self.create_publisher(String, "/arbiter/state", 10)
 
         now = lambda: self.get_clock().now().nanoseconds * 1e-9  # noqa: E731
@@ -76,6 +78,7 @@ class ArbiterNode(Node):
                                  qos_profile_sensor_data)
         self.create_subscription(Imu, "/chassis/imu", self.on_imu, qos_profile_sensor_data)
         self.create_subscription(PoseWithCovarianceStamped, "/amcl_pose", self.on_amcl, 10)
+        self.create_subscription(String, "/vehicle/fault", self.on_vehicle_fault, 10)
 
         out = REPO / "results" / "arbiter"
         out.mkdir(parents=True, exist_ok=True)
@@ -112,6 +115,12 @@ class ArbiterNode(Node):
     def on_reset(self, _):
         self.core.reset()
         self.event("reset")
+
+    def on_vehicle_fault(self, m):
+        reason = m.data.strip() or None
+        if reason != self.core.vehicle_fault_reason:
+            self.event("vehicle_fault" if reason else "vehicle_ok", reason=reason)
+        self.core.vehicle_fault(reason)
 
     def on_imu(self, m):
         t = tilt_from_imu(m)
@@ -152,8 +161,12 @@ def main():
     ap.add_argument("--max-loc-std", type=float, default=1.0)
     ap.add_argument("--teleop-timeout", type=float, default=0.3)
     ap.add_argument("--max-linear", type=float, default=1.0)
+    ap.add_argument("--out-topic", default="/cmd_vel",
+                    help="/cmd_vel drives the robot directly; /cmd_vel_arbiter routes through CAN")
     args, _ = ap.parse_known_args()
-    rclpy.init()
+    # Own the Ctrl+C: rclpy's handler would tear down the context before
+    # we could send the final zero command.
+    rclpy.init(signal_handler_options=SignalHandlerOptions.NO)
     node = ArbiterNode(args)
     try:
         rclpy.spin(node)
@@ -161,13 +174,11 @@ def main():
         pass
     finally:
         # Last word on the bus is always zero.
-        try:
+        for _ in range(3):
             node.pub.publish(Twist())
-            node.log.close()
-            node.destroy_node()
-            rclpy.shutdown()
-        except Exception:
-            pass
+        node.log.close()
+        node.destroy_node()
+        rclpy.shutdown()
     print(f"events: {node.log_path}")
 
 

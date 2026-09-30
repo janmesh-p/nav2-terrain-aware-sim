@@ -1,0 +1,42 @@
+VERSION "1.0"
+
+NS_ :
+
+BS_:
+
+BU_: COMPUTER ECU
+
+BO_ 256 DRIVE_CMD: 8 COMPUTER
+ SG_ speed_cmd : 0|16@1- (0.001,0) [-2|2] "m/s" ECU
+ SG_ yaw_rate_cmd : 16|16@1- (0.001,0) [-3|3] "rad/s" ECU
+ SG_ enable : 32|1@1+ (1,0) [0|1] "" ECU
+ SG_ mode : 33|2@1+ (1,0) [0|2] "" ECU
+ SG_ estop : 35|1@1+ (1,0) [0|1] "" ECU
+ SG_ counter : 40|4@1+ (1,0) [0|15] "" ECU
+ SG_ crc8 : 56|8@1+ (1,0) [0|255] "" ECU
+
+BO_ 272 CTRL_HEARTBEAT: 2 COMPUTER
+ SG_ alive : 0|8@1+ (1,0) [0|255] "" ECU
+ SG_ source : 8|2@1+ (1,0) [0|2] "" ECU
+
+BO_ 512 DRIVE_FB: 8 ECU
+ SG_ speed_meas : 0|16@1- (0.001,0) [-32.768|32.767] "m/s" COMPUTER
+ SG_ yaw_rate_meas : 16|16@1- (0.001,0) [-32.768|32.767] "rad/s" COMPUTER
+ SG_ state : 32|3@1+ (1,0) [0|3] "" COMPUTER
+ SG_ fault_timeout : 35|1@1+ (1,0) [0|1] "" COMPUTER
+ SG_ fault_counter : 36|1@1+ (1,0) [0|1] "" COMPUTER
+ SG_ fault_crc : 37|1@1+ (1,0) [0|1] "" COMPUTER
+ SG_ fault_range : 38|1@1+ (1,0) [0|1] "" COMPUTER
+ SG_ counter : 40|4@1+ (1,0) [0|15] "" COMPUTER
+ SG_ crc8 : 56|8@1+ (1,0) [0|255] "" COMPUTER
+
+BO_ 528 ECU_HEARTBEAT: 4 ECU
+ SG_ alive : 0|8@1+ (1,0) [0|255] "" COMPUTER
+ SG_ uptime : 8|24@1+ (0.01,0) [0|167772.15] "s" COMPUTER
+
+CM_ BO_ 256 "Drive setpoint, 50 Hz. crc8 is CRC-8 SAE J1850 over bytes 0-6.";
+CM_ SG_ 256 mode "0 stop, 1 autonomy, 2 teleop";
+CM_ SG_ 256 counter "Rolling 0-15, +1 per new frame. A repeated value means a stuck sender.";
+CM_ SG_ 512 state "0 disabled, 1 driving, 2 safe stop, 3 fault";
+VAL_ 256 mode 0 "stop" 1 "autonomy" 2 "teleop" ;
+VAL_ 512 state 0 "disabled" 1 "driving" 2 "safe_stop" 3 "fault" ;

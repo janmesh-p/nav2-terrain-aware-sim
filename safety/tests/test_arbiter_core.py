@@ -125,3 +125,20 @@ def test_output_is_clamped():
     a.autonomy_cmd(5.0, -9.0, t)
     d = a.step(t)
     assert (d.linear, d.angular) == (1.0, -1.5)
+
+
+def test_vehicle_fault_stops_and_requires_new_request():
+    a = Arbiter()
+    t = run_autonomy(a, 0.0)
+    a.vehicle_fault("ECU heartbeat lost")
+    ready(a, t)
+    a.autonomy_cmd(0.8, 0.0, t)
+    assert a.step(t).reason == "vehicle: ECU heartbeat lost"
+    a.vehicle_fault(None)                      # ECU recovers
+    ready(a, t + DT)
+    a.autonomy_cmd(0.8, 0.0, t + DT)
+    assert a.step(t + DT).source == "stop", "recovery alone must not resume motion"
+    a.request(Mode.AUTONOMY)
+    ready(a, t + 2 * DT)
+    a.autonomy_cmd(0.8, 0.0, t + 2 * DT)
+    assert a.step(t + 2 * DT).source == "autonomy"
