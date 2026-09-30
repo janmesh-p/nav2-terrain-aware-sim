@@ -1,0 +1,6 @@
+{"t": 0.023, "event": "disarmed_ready"}
+{"t": 9.093, "event": "armed"}
+{"t": 10.513, "event": "armed"}
+{"t": 11.422, "event": "stop", "state": 2, "reason": "no valid command for 100 ms"}
+{"t": 11.984, "event": "stop", "state": 3, "reason": "counter stuck at 5"}
+{"t": 132.404, "event": "shutdown", "stats": {"accepted": 4288, "bad_crc": 0, "repeated": 298, "range": 0}}

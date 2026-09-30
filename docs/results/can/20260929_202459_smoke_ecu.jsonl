@@ -1,0 +1,4 @@
+{"t": 8.394, "event": "disarmed_ready"}
+{"t": 20.514, "event": "armed"}
+{"t": 23.736, "event": "stop", "state": 3, "reason": "3 corrupted frames in a row"}
+{"t": 34.061, "event": "shutdown", "stats": {"accepted": 1284, "bad_crc": 10, "repeated": 0, "range": 0}}

@@ -1,0 +1,5 @@
+{"t": 0.051, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 0.101, "event": "vehicle_ok", "reason": null}
+{"t": 51.301, "event": "vehicle_fault", "reason": "ECU stopped: crc"}
+{"t": 51.35, "event": "vehicle_ok", "reason": null}
+{"t": 90.316, "event": "shutdown", "sent": 4515, "fb_bad_crc": 0}
