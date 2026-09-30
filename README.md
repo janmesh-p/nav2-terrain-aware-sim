@@ -2,13 +2,13 @@
 
 Terrain-aware navigation for a wheeled robot in NVIDIA Isaac Sim 5.0 with ROS 2 Jazzy and Nav2.
 
-Stock Nav2 sees the world as floor or wall. Anything below its obstacle height filter (about 10 to 20 cm here) counts as floor, so ramps, bumps and rough ground are invisible to it. This project adds a costmap layer that measures slope, roughness and height steps from 3D lidar, a ground-truth evaluation pipeline that scores navigation, localization and the layer's own perception against the simulator's true state, and a command arbiter that decides who drives the robot and when it must stop.
+Stock Nav2 sees the world as floor or wall. Anything below its obstacle height filter (about 10 to 20 cm here) counts as floor, so ramps, bumps and rough ground are invisible to it. This project adds a costmap layer that measures slope, roughness and height steps from 3D lidar, a ground-truth evaluation pipeline that scores navigation, localization and the layer's own perception against the simulator's true state, a command arbiter that decides who drives the robot and when it must stop, and a CAN layer so every motion command reaches the robot through a simulated drive controller that protects itself.
 
-| Stock Nav2 | With terrain layer | Safety arbiter |
-|---|---|---|
-| [baseline_final_4x.mp4](media/baseline_final_4x.mp4) | [terrain_final_4x.mp4](media/terrain_final_4x.mp4) | [arbiter_demo.mp4](media/arbiter_demo.mp4) |
+| Stock Nav2 | With terrain layer | Safety arbiter | Full chain over CAN | CAN stuck sender |
+|---|---|---|---|---|
+| [baseline_final_4x.mp4](media/baseline_final_4x.mp4) | [terrain_final_4x.mp4](media/terrain_final_4x.mp4) | [arbiter_demo.mp4](media/arbiter_demo.mp4) | [can_full_chain.mp4](media/can_full_chain.mp4) | [can_stuck_sender.mp4](media/can_stuck_sender.mp4) |
 
-The navigation videos run at 4x speed on the same route. The arbiter video runs at real time, since stop timing is the point.
+The navigation videos run at 4x speed on the same route. The safety and CAN videos run at real time, since stop timing is the point.
 
 ## What I built
 
@@ -17,6 +17,7 @@ The navigation videos run at 4x speed on the same route. The arbiter video runs 
 - **Terrain costmap layer** (`terrain_costmap/`, C++ Nav2 plugin). Fuses lidar returns into a rolling elevation grid, fits a least-squares plane in a 0.5 m window per cell (slope and residual roughness in one pass, O(n) via integral images), marks height steps and vertical faces lethal, and writes a graded cost. Unit tested with gtest.
 - **Localization scan** (`bringup/launch/terrain_nav.launch.py`). A second laser scan for AMCL that starts 35 cm above the floor, above all terrain.
 - **Safety arbiter** (`safety/`). Chooses between autonomy, a remote operator and a safe stop, publishes one velocity command at a fixed 20 Hz, latches the e-stop, and logs every control decision. Policy is pure Python with unit tests.
+- **CAN layer** (`vehicle_can/`). A DBC message set, a bridge that puts the arbiter's commands on a Linux virtual CAN bus, and a simulated drive ECU that is the only thing allowed to move the robot. Commands carry a CRC-8 and a rolling counter; the ECU runs its own watchdog. Includes a fault injector. Unit tested.
 - **Evaluation** (`tools/`). Ground-truth pose publisher in Isaac Sim, a route runner that judges each goal by the true pose (not Nav2's belief), a route validator, a localization evaluator, a layer accuracy scorer, and an A/B aggregator.
 
 ## Architecture
@@ -96,6 +97,68 @@ The refusal was not scripted. Autonomy asked for control before localization exi
 - Timeouts use simulation time. On a real vehicle they would run on a monotonic clock, with the watchdog outside the process it guards.
 - Tested against scripted teleop streams, not a real link with latency and loss.
 
+## CAN layer
+
+On a real vehicle, the computer does not drive the motors. It sends commands over a CAN bus to a drive controller (ECU), and the ECU drives the motors. If the computer crashes, the ECU has to notice and stop the vehicle by itself. This layer reproduces that split in simulation.
+
+```mermaid
+flowchart LR
+  NAV[Nav2] --> ARB[Arbiter]
+  ARB -->|/cmd_vel_arbiter| BR[CAN bridge]
+  BR -->|DRIVE_CMD 50 Hz, CTRL_HEARTBEAT 10 Hz| BUS((vcan0))
+  BUS --> ECU[Simulated drive ECU]
+  ECU -->|DRIVE_FB 50 Hz, ECU_HEARTBEAT 10 Hz| BUS
+  BUS --> BR
+  ECU -->|/cmd_vel, the only publisher| ROBOT[Robot in Isaac Sim]
+  BR -->|/vehicle/fault| ARB
+```
+
+### Messages ([drive.dbc](vehicle_can/drive.dbc))
+
+| ID | Name | Direction | Rate | Content |
+|---|---|---|---|---|
+| 0x100 | DRIVE_CMD | computer to ECU | 50 Hz | speed, yaw rate, enable, mode, e-stop, rolling counter, CRC-8 |
+| 0x110 | CTRL_HEARTBEAT | computer to ECU | 10 Hz | alive counter, active source |
+| 0x200 | DRIVE_FB | ECU to computer | 50 Hz | measured speed and yaw rate, ECU state, fault flags, counter, CRC-8 |
+| 0x210 | ECU_HEARTBEAT | ECU to computer | 10 Hz | alive counter, uptime |
+
+The CRC (SAE J1850, verified against the published check value) catches corrupted bits. The rolling counter catches a sender that froze while its CAN hardware keeps repeating the last valid frame, which a CRC alone would accept forever.
+
+### ECU rules
+
+- No valid new command for 100 ms: safe stop.
+- A frame with a bad CRC is dropped. Three in a row: fault.
+- A repeated counter means a stuck sender. Three repeats: fault.
+- Out-of-range speed or yaw rate: fault.
+- After any stop, the ECU re-arms only after enable is held low for 0.5 s and then raised again. Holding the fault that long means nothing upstream can miss it.
+- The arbiter treats any ECU fault as a stop and drops the granted mode, so driving again needs an explicit request.
+
+### Results
+
+Full chain in Isaac Sim, robot moving toward a goal 17 m away, faults injected live ([report](docs/results/can/sim4_arbiter_report.txt), [logs](docs/results/can/)):
+
+| Fault | What happened |
+|---|---|
+| Computer hangs (bridge frozen) | ECU stopped the robot after 100 ms without any command from the computer |
+| Computer recovers | Robot stayed stopped until an explicit autonomy request |
+| 10 corrupted frames | All 10 rejected, fault on the 3rd, arbiter stopped |
+| ECU dies | Bridge reported lost heartbeat within 0.3 s, arbiter stopped |
+| Stuck sender (separate run) | Same valid frame replayed: 99 repeats rejected, fault on counter |
+
+The ECU accepted 11,765 frames in the run and rejected every injected one.
+
+### What went wrong: false heartbeat faults
+
+The first full run showed four "ECU heartbeat lost" faults with nothing injected. Each lined up with a new `ros2` command starting. The heartbeats were sent from the ROS event loop, which stalls briefly while ROS discovers a new process, so a heartbeat arrived late and the bridge raised a fault. It failed safe (the robot stopped) but a real vehicle would stop at random.
+
+Moving all CAN timing (commands, heartbeats, watchdog checks) onto dedicated threads with fixed deadlines cut this to one false fault in the next run, lasting 0.6 s, while Isaac Sim and Nav2 were loading the CPU. On a vehicle, the remaining step is real-time scheduling or a C++ node pinned to its own core. Safety timing does not belong on a general-purpose event loop.
+
+### Limits
+
+- Virtual bus: no real bus timing, arbitration delays or electrical faults.
+- The DBC and ECU are my own design, not a real drive controller.
+- Nav2's docking server can also publish to the motors, bypassing the arbiter. It is idle unless docking is requested; on a vehicle it would be remapped or disabled.
+
 ## Results
 
 Final configuration, 3 runs per condition, same scene, same validated route, same Nav2 settings except the terrain layer. Every goal is judged against the true robot pose with a 0.5 m tolerance.
@@ -168,6 +231,7 @@ terrain_costmap/ Nav2 costmap layer (C++), gtests
 bringup/         launch file, params generator, generated params, route
 tools/           route runner, validator, layout search, evaluators, A/B aggregator
 safety/          command arbiter, policy core and tests, event report
+vehicle_can/     DBC, protocol, simulated drive ECU, CAN bridge, fault injector, tests
 patches/         Nav2 1.3.13 compatibility fixes for the Isaac Sim 5.0 Carter sample
 docs/results/    archived results per layout version
 media/           demo videos
@@ -211,6 +275,15 @@ ros2 launch bringup/launch/terrain_nav.launch.py params_file:=$PWD/bringup/param
 python3 safety/cmd_arbiter.py --label demo1
 ros2 topic pub --once /arbiter/request_mode std_msgs/String "data: autonomy"
 python3 safety/arbiter_report.py results/arbiter/<file>.jsonl
+
+# CAN: virtual bus, then ECU, bridge and arbiter (arbiter output goes to the bridge)
+sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set up vcan0
+pip install python-can cantools
+python3 -m pytest vehicle_can/tests -q
+python3 vehicle_can/ecu_sim.py --label run1 &
+python3 vehicle_can/can_bridge.py --label run1 &
+python3 safety/cmd_arbiter.py --label run1 --out-topic /cmd_vel_arbiter &
+python3 vehicle_can/inject.py corrupt --count 10     # fault injection
 
 # A/B tables and figure
 python3 tools/aggregate_ab.py --conditions v3d_baseline v3d_terrain --exclude --out docs/results/ab_v3d
