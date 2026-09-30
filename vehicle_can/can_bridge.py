@@ -67,10 +67,29 @@ class BridgeNode(Node):
         self.log = open(out / f"{dt.datetime.now():%Y%m%d_%H%M%S}_{args.label}_bridge.jsonl", "w", buffering=1)
         self.t0 = time.monotonic()
         self.notifier = can.Notifier(self.bus, [self.on_can])
-        self.create_timer(0.02, self.send_cmd)
-        self.create_timer(0.1, self.send_heartbeat)
-        self.create_timer(0.05, self.check_ecu)
-        self.get_logger().info(f"bridge on {args.channel}")
+        # CAN transmit and ECU health checks run on their own thread, so a
+        # stalled ROS executor cannot starve the bus or fake a lost heartbeat.
+        self.running = True
+        self.loop = threading.Thread(target=self.run_loop, name="bridge_rt", daemon=True)
+        self.loop.start()
+        self.get_logger().info(f"bridge on {args.channel}, timing thread at 50 Hz")
+
+    def run_loop(self, period=0.02):
+        next_t = time.monotonic()
+        n = 0
+        while self.running:
+            self.send_cmd()
+            if n % 5 == 0:
+                self.send_heartbeat()
+            if n % 2 == 0:
+                self.check_ecu()
+            n += 1
+            next_t += period
+            delay = next_t - time.monotonic()
+            if delay > 0:
+                time.sleep(delay)
+            else:
+                next_t = time.monotonic()
 
     def now(self):
         return time.monotonic() - self.t0
@@ -148,6 +167,8 @@ class BridgeNode(Node):
                 "faults": {k[6:]: fb[k] for k in fb if k.startswith("fault_")}})))
 
     def shutdown(self):
+        self.running = False
+        self.loop.join(timeout=1.0)
         self.log.write(json.dumps({"t": round(self.now(), 3), "event": "shutdown",
                                    "sent": self.sent, "fb_bad_crc": self.fb_bad_crc}) + "\n")
         self.log.close()

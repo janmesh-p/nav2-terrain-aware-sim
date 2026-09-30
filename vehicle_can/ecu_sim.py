@@ -52,9 +52,28 @@ class EcuNode(Node):
         self.logged = 0
         self.last_state = None
         self.notifier = can.Notifier(self.bus, [self.on_can])
-        self.create_timer(0.02, self.tick)
-        self.create_timer(0.1, self.heartbeat)
-        self.get_logger().info(f"ECU on {args.channel}, driving /cmd_vel")
+        # All safety timing runs here, not on the ROS executor: executor
+        # stalls (DDS discovery when other nodes start) must not delay the
+        # watchdog, the motor output, or the heartbeat.
+        self.running = True
+        self.loop = threading.Thread(target=self.run_loop, name="ecu_rt", daemon=True)
+        self.loop.start()
+        self.get_logger().info(f"ECU on {args.channel}, driving /cmd_vel, timing thread at 50 Hz")
+
+    def run_loop(self, period=0.02):
+        next_t = time.monotonic()
+        n = 0
+        while self.running:
+            self.tick()
+            if n % 5 == 0:
+                self.heartbeat()
+            n += 1
+            next_t += period
+            delay = next_t - time.monotonic()
+            if delay > 0:
+                time.sleep(delay)
+            else:
+                next_t = time.monotonic()  # overran: resync instead of bursting
 
     def now(self):
         return time.monotonic() - self.t0
@@ -91,6 +110,8 @@ class EcuNode(Node):
                                   data=p.encode_ecu_heartbeat(self.alive, self.now())))
 
     def shutdown(self):
+        self.running = False
+        self.loop.join(timeout=1.0)
         for _ in range(3):
             self.cmd_pub.publish(Twist())  # motors off on the way out
         with self.lock:

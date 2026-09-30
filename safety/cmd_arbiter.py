@@ -27,9 +27,11 @@ import pathlib
 import sys
 
 import rclpy
+import rclpy.clock
 from rclpy.signals import SignalHandlerOptions
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist
 from nav_msgs.msg import Odometry
+from rclpy.clock import ClockType
 from rclpy.node import Node
 from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_sensor_data
@@ -86,7 +88,9 @@ class ArbiterNode(Node):
         self.log = open(self.log_path, "w", buffering=1)
         self.last = None
         self.stopping_since = None
-        self.create_timer(0.05, self.tick)
+        # Output cadence on wall-clock time: downstream staleness checks are
+        # wall-clock too, and a slow simulator would otherwise stretch it.
+        self.create_timer(0.05, self.tick, clock=rclpy.clock.Clock(clock_type=ClockType.STEADY_TIME))
         self.get_logger().info(f"arbiter up, logging to {self.log_path}")
 
     def event(self, kind, **fields):

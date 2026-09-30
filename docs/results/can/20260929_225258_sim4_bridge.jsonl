@@ -1,0 +1,12 @@
+{"t": 0.001, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 0.536, "event": "vehicle_ok", "reason": null}
+{"t": 3.216, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 3.816, "event": "vehicle_ok", "reason": null}
+{"t": 185.039, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 185.079, "event": "vehicle_fault", "reason": "ECU stopped: timeout"}
+{"t": 186.359, "event": "vehicle_ok", "reason": null}
+{"t": 227.359, "event": "vehicle_fault", "reason": "ECU stopped: crc"}
+{"t": 228.439, "event": "vehicle_ok", "reason": null}
+{"t": 252.827, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 253.427, "event": "vehicle_ok", "reason": null}
+{"t": 263.747, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}

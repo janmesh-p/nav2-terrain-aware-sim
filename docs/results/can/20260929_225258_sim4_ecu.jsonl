@@ -1,0 +1,9 @@
+{"t": 0.034, "event": "disarmed_ready"}
+{"t": 133.025, "event": "armed"}
+{"t": 158.185, "event": "stop", "state": 2, "reason": "no valid command for 100 ms"}
+{"t": 185.891, "event": "disarmed_ready"}
+{"t": 211.031, "event": "armed"}
+{"t": 227.353, "event": "stop", "state": 3, "reason": "3 corrupted frames in a row"}
+{"t": 227.951, "event": "disarmed_ready"}
+{"t": 253.479, "event": "armed"}
+{"t": 263.473, "event": "shutdown", "stats": {"accepted": 11765, "bad_crc": 10, "repeated": 0, "range": 0}}

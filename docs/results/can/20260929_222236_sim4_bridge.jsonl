@@ -1,0 +1,2 @@
+{"t": 0.001, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 0.561, "event": "vehicle_ok", "reason": null}

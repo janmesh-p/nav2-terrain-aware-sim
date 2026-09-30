@@ -1,0 +1,33 @@
+{"t": 26.183, "event": "decision", "source": "stop", "reason": "odometry stale", "linear": 0.0, "angular": 0.0}
+{"t": 26.2, "event": "decision", "source": "stop", "reason": "stop requested", "linear": 0.0, "angular": 0.0}
+{"t": 26.317, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 26.333, "event": "decision", "source": "stop", "reason": "vehicle: ECU heartbeat lost", "linear": 0.0, "angular": 0.0}
+{"t": 26.333, "event": "vehicle_ok", "reason": null}
+{"t": 26.35, "event": "decision", "source": "stop", "reason": "stop requested", "linear": 0.0, "angular": 0.0}
+{"t": 27.183, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 27.183, "event": "decision", "source": "stop", "reason": "vehicle: ECU heartbeat lost", "linear": 0.0, "angular": 0.0}
+{"t": 27.367, "event": "vehicle_ok", "reason": null}
+{"t": 27.367, "event": "decision", "source": "stop", "reason": "stop requested", "linear": 0.0, "angular": 0.0}
+{"t": 67.683, "event": "request", "mode": "autonomy"}
+{"t": 67.683, "event": "decision", "source": "autonomy", "reason": "autonomy", "linear": 0.0, "angular": -1.2}
+{"t": 83.4, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 83.4, "event": "vehicle_fault", "reason": "ECU stopped: timeout"}
+{"t": 83.417, "event": "decision", "source": "stop", "reason": "vehicle: ECU stopped: timeout", "linear": 0.914, "angular": -0.249}
+{"t": 83.733, "event": "vehicle_ok", "reason": null}
+{"t": 83.733, "event": "decision", "source": "stop", "reason": "stop requested", "linear": 0.597, "angular": -0.0}
+{"t": 84.333, "event": "standstill", "after_s": 0.6}
+{"t": 91.433, "event": "request", "mode": "autonomy"}
+{"t": 91.433, "event": "decision", "source": "autonomy", "reason": "autonomy", "linear": 0.947, "angular": -0.568}
+{"t": 96.6, "event": "vehicle_fault", "reason": "ECU stopped: crc"}
+{"t": 96.6, "event": "decision", "source": "stop", "reason": "vehicle: ECU stopped: crc", "linear": 0.931, "angular": 0.0}
+{"t": 96.933, "event": "vehicle_ok", "reason": null}
+{"t": 96.95, "event": "decision", "source": "stop", "reason": "stop requested", "linear": 0.581, "angular": 0.0}
+{"t": 97.533, "event": "standstill", "after_s": 0.583}
+{"t": 104.383, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 104.383, "event": "decision", "source": "stop", "reason": "vehicle: ECU heartbeat lost", "linear": 0.0, "angular": 0.0}
+{"t": 104.45, "event": "request", "mode": "autonomy"}
+{"t": 104.567, "event": "vehicle_ok", "reason": null}
+{"t": 104.567, "event": "decision", "source": "autonomy", "reason": "autonomy", "linear": 0.947, "angular": 0.442}
+{"t": 107.983, "event": "vehicle_fault", "reason": "ECU heartbeat lost"}
+{"t": 108.0, "event": "decision", "source": "stop", "reason": "vehicle: ECU heartbeat lost", "linear": 0.931, "angular": 0.0}
+{"t": 108.933, "event": "standstill", "after_s": 0.933}
